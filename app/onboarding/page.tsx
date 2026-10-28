@@ -20,7 +20,11 @@ export default function OnboardingPage() {
     setError('')
     const response = await fetch('/api/onboarding', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ role, portfolio, governance }) })
     setPending(false)
-    if (!response.ok) { setError('We could not save your workspace profile. Please try again.'); return }
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null) as { error?: string } | null
+      setError(response.status === 401 ? 'Your session has expired. Sign in again to save your workspace profile.' : payload?.error ?? 'We could not save your workspace profile. Please try again.')
+      return
+    }
     window.location.assign('/workspace')
   }
 
