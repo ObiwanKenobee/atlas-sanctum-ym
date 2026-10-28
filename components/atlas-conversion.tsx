@@ -8,6 +8,7 @@ export default function AtlasConversion({ children }: { children: ReactNode }) {
   const [pilotOpen, setPilotOpen] = useState(false)
   const [newsletterOpen, setNewsletterOpen] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [pilotState, setPilotState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [newsletterState, setNewsletterState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   useEffect(() => {
@@ -28,8 +29,22 @@ export default function AtlasConversion({ children }: { children: ReactNode }) {
     setPilotOpen(true)
   }
 
-  function submitPilot(event: FormEvent<HTMLFormElement>) {
+  async function submitPilot(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setPilotState('loading')
+    const form = new FormData(event.currentTarget)
+    const response = await fetch('/api/inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(form.entries())),
+    }).catch(() => null)
+
+    if (!response?.ok) {
+      setPilotState('error')
+      return
+    }
+
+    setPilotState('idle')
     setSubmitted(true)
   }
 
