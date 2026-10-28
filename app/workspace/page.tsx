@@ -1,10 +1,11 @@
+import { redirect } from 'next/navigation'
 import AtlasWorkspace from '@/components/atlas-workspace'
+import { createClient } from '@/lib/supabase/server'
 
-export const metadata = {
-  title: 'Workspace | Atlas Sanctum',
-  description: 'Atlas Sanctum decision intelligence workspace for evidence-led action.',
-}
-
-export default function WorkspacePage() {
+export default async function WorkspacePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth')
   return <AtlasWorkspace />
 }
+
