@@ -176,7 +176,7 @@ const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
 const navigation = [
   { label: 'Observatory', href: '#observatory' },
   { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence']] },
-  { label: 'Solutions', items: [['Water & Climate Resilience', '#solutions'], ['Agriculture & Food Systems', '#solutions'], ['Programme & Grant Accountability', '#solutions']] },
+  { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
   { label: 'Commons', items: [['Open-source Projects', '#commons'], ['Contribute on GitHub', githubUrl], ['Principles & Governance', '#research']] },
   { label: 'Research', items: [['Research & Insights', '#research'], ['Methods & Data Sources', '#observatory'], ['Field Notes & Case Studies', '#research']] },
   { label: 'Partnerships', items: [['Pilot Opportunities', '#partnerships'], ['Research & Implementation', '#partnerships'], ['Open-source Collaboration', '#commons']] },
