@@ -2,9 +2,25 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://atlas-sanctum-ym.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Atlas Sanctum — Intelligence for a More Flourishing World',
-  description: 'Open-source intelligence infrastructure for ethical finance, humanitarian coordination, regenerative economics, and sustainable development.',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Atlas Sanctum — Intelligence for a More Flourishing World',
+    template: '%s | Atlas Sanctum',
+  },
+  description: 'Atlas Sanctum builds open, evidence-led decision infrastructure for water resilience, agriculture, food systems, and accountable programmes.',
+  keywords: ['regenerative decision engine', 'evidence-led decisions', 'water resilience', 'agriculture and food systems', 'programme accountability', 'open-source public interest technology'],
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: 'Atlas Sanctum',
+    title: 'Atlas Sanctum — Intelligence for a More Flourishing World',
+    description: 'Open, evidence-led decision infrastructure for a more flourishing world.',
+    url: siteUrl,
+  },
+  twitter: { card: 'summary_large_image', title: 'Atlas Sanctum — Intelligence for a More Flourishing World', description: 'Open, evidence-led decision infrastructure for a more flourishing world.' },
   generator: 'Atlas Sanctum',
   icons: {
     icon: [
@@ -41,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: 'Atlas Sanctum', url: siteUrl, description: 'Open, evidence-led decision infrastructure for a more flourishing world.' }, { '@type': 'WebSite', name: 'Atlas Sanctum', url: siteUrl }] }) }} />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
