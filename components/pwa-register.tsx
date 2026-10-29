@@ -5,7 +5,8 @@ import { useEffect } from 'react'
 export default function PwaRegister() {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
-    if (process.env.NODE_ENV === 'production') {
+    const isV0Preview = window.location.hostname.endsWith('.v0.build') || window.self !== window.top
+    if (process.env.NODE_ENV === 'production' && !isV0Preview) {
       navigator.serviceWorker.register('/sw.js').catch(() => undefined)
       return
     }
