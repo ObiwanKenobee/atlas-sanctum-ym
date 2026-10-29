@@ -177,7 +177,7 @@ const navigation = [
   { label: 'Observatory', href: '#observatory' },
   { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence']] },
   { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
-  { label: 'Commons', items: [['Open-source Projects', '#commons'], ['Contribute on GitHub', githubUrl], ['Principles & Governance', '#research']] },
+  { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
   { label: 'Research', items: [['Research & Insights', '#research'], ['Methods & Data Sources', '#observatory'], ['Field Notes & Case Studies', '#research']] },
   { label: 'Partnerships', items: [['Pilot Opportunities', '#partnerships'], ['Research & Implementation', '#partnerships'], ['Open-source Collaboration', '#commons']] },
 ] as const
