@@ -178,7 +178,7 @@ const navigation = [
   { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
   { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
 { label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
- { label: 'Partnerships', items: [['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
+ { label: 'Partnerships', items: [['Work with Atlas', '/work-with-atlas'], ['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
 ] as const
 
 function openPilotFromHeader() {
