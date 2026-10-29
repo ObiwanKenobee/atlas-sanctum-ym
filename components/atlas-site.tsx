@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
 import AtlasDonate from '@/components/atlas-donate'
-import AtlasFounder from '@/components/atlas-founder'
 
 const locations = {
   Turkana: {
@@ -232,8 +231,6 @@ export default function AtlasSite() {
       <section id="research" className="border-y border-[#c9c2b1] bg-[#efe9dc] px-5 py-24 lg:px-10 lg:py-32"><div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1fr]"><div><SectionLabel>Why Atlas</SectionLabel><h2 className="max-w-lg font-serif text-5xl font-light leading-[1.05]">Technology in service of truth, justice, stewardship, and service.</h2></div><div className="flex flex-col gap-6"><p className="text-xl font-light leading-relaxed text-[#455148]">Atlas is Christian-founded, but designed for broad collaboration. We believe the work of human flourishing asks for intellectual honesty, care for creation, and a bias toward serving people who are most affected by decisions.</p><div className="grid grid-cols-2 gap-x-6 gap-y-7 border-t border-[#c9c2b1] pt-7">{[['Truth','Say what the evidence can support.'],['Justice','Make power and trade-offs visible.'],['Stewardship','Treat resources and creation as entrusted.'],['Service','Build with, not merely for, communities.']].map(([title, copy]) => <div key={title}><CircleCheck className="size-4 text-[#a07837]" /><h3 className="mt-3 font-serif text-xl">{title}</h3><p className="mt-2 text-xs leading-relaxed text-[#687168]">{copy}</p></div>)}</div></div></div></section>
 
       <section id="partnerships" className="bg-[#b59451] px-5 py-24 text-[#17382d] lg:px-10 lg:py-28"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><SectionLabel>Partnerships & pilots</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.02] tracking-[-0.03em] sm:text-7xl">Bring us a hard question.</h2><p className="mt-6 max-w-lg text-sm leading-relaxed text-[#3c5143]">We work with organizations ready to make a decision more grounded, more accountable, and more useful to the people it affects.</p></div><a href="mailto:hello@atlassanctum.org" className="inline-flex items-center gap-3 border border-[#17382d] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] hover:bg-[#17382d] hover:text-[#f7f0df]">Start a conversation <ArrowUpRight className="size-4" /></a></div></section>
-
-      <AtlasFounder />
 
       <AtlasDonate />
 
