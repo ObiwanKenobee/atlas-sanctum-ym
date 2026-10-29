@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Bell, Check, ChevronDown, CircleHelp, Filter, Layers3, Map, Menu, Search, Settings2, ShieldCheck, SlidersHorizontal, X } from 'lucide-react'
 import WorkspaceSectionView from '@/components/workspace-section-view'
+import type { WorkspaceOrganization } from '@/lib/organizations'
 
 const regions = [
   { name: 'Turkana', country: 'Kenya', signal: 'Water stress', score: 78, freshness: '14 days', tone: 'amber' },
@@ -28,8 +29,9 @@ function Badge({ children, tone = 'neutral' }: { children: React.ReactNode; tone
   return <span className={`inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] uppercase tracking-[0.12em] ${styles[tone]}`}>{children}</span>
 }
 
-export default function AtlasWorkspace() {
+export default function AtlasWorkspace({ organizations = [] }: { organizations?: WorkspaceOrganization[] }) {
   const [active, setActive] = useState('Observatory')
+  const [selectedOrganization, setSelectedOrganization] = useState(organizations[0]?.id ?? '')
   const [selectedRegion, setSelectedRegion] = useState('Turkana')
   const [selectedDecision, setSelectedDecision] = useState(decisions[0])
   const [mobileNav, setMobileNav] = useState(false)
@@ -42,7 +44,7 @@ export default function AtlasWorkspace() {
       <header className="border-b border-[#d4cebd] bg-[#f7f3ea] px-5 py-4 lg:px-8">
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-5">
           <div className="flex items-center gap-4"><button className="lg:hidden" onClick={() => setMobileNav(!mobileNav)} aria-label="Toggle workspace navigation">{mobileNav ? <X /> : <Menu />}</button><div className="grid size-9 place-items-center border border-[#b59451]"><span className="relative block size-5 rotate-45 border border-[#b59451]"><span className="absolute left-1/2 top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#b59451]" /></span></div><div><p className="font-serif text-xl tracking-[0.15em]">ATLAS <span className="font-sans text-[9px] font-medium tracking-[0.24em]">SANCTUM</span></p><p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#a07837]">Decision intelligence workspace</p></div></div>
-          <div className="hidden items-center gap-4 md:flex"><div className="flex items-center gap-2 border border-[#d4cebd] bg-[#f0ecdf] px-3 py-2 text-xs text-[#687168]"><Search className="size-3.5" /> Search workspace <kbd className="ml-5 border border-[#c9c2b1] px-1.5 py-0.5 font-mono text-[9px]">⌘K</kbd></div><button className="relative grid size-9 place-items-center border border-[#d4cebd]" aria-label="Notifications"><Bell className="size-4" /><span className="absolute right-1 top-1 size-1.5 rounded-full bg-[#a07837]" /></button><div className="grid size-9 place-items-center bg-[#17382d] text-xs text-[#f7f0df]">AK</div></div>
+          <div className="hidden items-center gap-4 md:flex">{organizations.length > 0 && <label className="flex items-center gap-2 border border-[#d4cebd] bg-[#f0ecdf] px-3 py-2 text-xs text-[#687168]"><span className="sr-only">Active organization</span><select value={selectedOrganization} onChange={(event) => setSelectedOrganization(event.target.value)} className="max-w-[170px] bg-transparent text-xs text-[#17382d] outline-none">{organizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}</select><span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#a07837]">{organizations.find((organization) => organization.id === selectedOrganization)?.role}</span></label>}<div className="flex items-center gap-2 border border-[#d4cebd] bg-[#f0ecdf] px-3 py-2 text-xs text-[#687168]"><Search className="size-3.5" /> Search workspace <kbd className="ml-5 border border-[#c9c2b1] px-1.5 py-0.5 font-mono text-[9px]">⌘K</kbd></div><button className="relative grid size-9 place-items-center border border-[#d4cebd]" aria-label="Notifications"><Bell className="size-4" /><span className="absolute right-1 top-1 size-1.5 rounded-full bg-[#a07837]" /></button><div className="grid size-9 place-items-center bg-[#17382d] text-xs text-[#f7f0df]">AK</div></div>
         </div>
       </header>
       <div className="mx-auto flex max-w-[1500px]">
