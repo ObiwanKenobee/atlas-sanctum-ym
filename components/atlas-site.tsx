@@ -117,7 +117,61 @@ export default function AtlasSite() {
 
       <section id="partnerships" className="bg-[#b59451] px-5 py-24 text-[#17382d] lg:px-10 lg:py-28"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><SectionLabel>Partnerships & pilots</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.02] tracking-[-0.03em] sm:text-7xl">Bring us a hard question.</h2><p className="mt-6 max-w-lg text-sm leading-relaxed text-[#3c5143]">We work with organizations ready to make a decision more grounded, more accountable, and more useful to the people it affects.</p></div><a href="mailto:hello@atlassanctum.org" className="inline-flex items-center gap-3 border border-[#17382d] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] hover:bg-[#17382d] hover:text-[#f7f0df]">Start a conversation <ArrowUpRight className="size-4" /></a></div></section>
 
-      <footer id="about" className="bg-[#102a21] px-5 py-12 text-[#b9c0b5] lg:px-10"><div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]"><div><Mark light /><p className="mt-6 max-w-xs text-xs leading-relaxed">Open-source intelligence infrastructure for ethical finance, humanitarian coordination, and sustainable development.</p></div><div><p className="mb-4 text-[10px] uppercase tracking-[0.18em] text-[#d8c28f]">Explore</p><div className="flex flex-col gap-3 text-xs"><a href="#observatory">Observatory</a><a href="#platform">Platform</a><a href="#solutions">Solutions</a><a href="#commons">Commons</a></div></div><div><p className="mb-4 text-[10px] uppercase tracking-[0.18em] text-[#d8c28f]">Connect</p><div className="flex flex-col gap-3 text-xs"><a href="#partnerships">Partner with us</a><a href="mailto:hello@atlassanctum.org">Email Atlas</a><a href="#github">GitHub</a></div></div><div><p className="mb-4 text-[10px] uppercase tracking-[0.18em] text-[#d8c28f]">A note on claims</p><p className="text-xs leading-relaxed">Demonstrations on this site use clearly labelled sample data. We do not claim outcomes without evidence.</p></div></div><div className="mx-auto mt-12 flex max-w-7xl flex-col justify-between gap-3 border-t border-[#315044] pt-5 text-[10px] uppercase tracking-[0.14em] sm:flex-row"><span>© 2026 Atlas Sanctum</span><span>Built in the open, for the common good.</span></div></footer>
+      <footer id="about" className="bg-[#102a21] px-5 py-12 text-[#b9c0b5] lg:px-10 lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1.25fr] lg:gap-16">
+        <div>
+          <Mark light />
+          <p className="mt-6 max-w-sm text-sm leading-relaxed">Open-source intelligence infrastructure for ethical finance, humanitarian coordination, and regenerative development.</p>
+          <p className="mt-4 max-w-sm text-xs leading-relaxed text-[#91a397]">Rooted in Christ. Guided by stewardship. Built in service of human flourishing.</p>
+        </div>
+
+        <nav aria-label="Footer navigation">
+          <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d8c28f]">Explore</p>
+          <div className="flex flex-col items-start gap-3 text-sm">
+            {[
+              { label: 'Observatory', href: '#observatory' },
+              { label: 'Platform', href: '#platform' },
+              { label: 'Solutions', href: '#solutions' },
+              { label: 'Commons', href: '#commons' },
+            ].map((item) => (
+              <a key={item.label} href={item.href} className="transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+        <div>
+          <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d8c28f]">Connect</p>
+          <p className="max-w-sm text-sm leading-relaxed text-[#d0d5cd]">Bring a difficult question, join the commons, or start a conversation.</p>
+
+          <div className="mt-6 flex flex-col items-start gap-5">
+            <a href="#partnerships" className="group inline-flex items-center gap-3 border border-[#b59451] px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#f7f0df] transition-colors hover:bg-[#b59451] hover:text-[#102a21] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
+              Explore a pilot <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+            <a href="mailto:hello@atlassanctum.org" className="group flex flex-col gap-1 text-sm transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
+              <span className="font-medium">Email Atlas</span>
+              <span className="text-xs text-[#91a397] group-hover:text-[#d8c28f]">hello@atlassanctum.org</span>
+            </a>
+            <a href="https://github.com/ObiwanKenobee/atlas-sanctum-ym" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-3 text-sm transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
+              <span className="flex flex-col gap-1">
+                <span className="font-medium">GitHub</span>
+                <span className="text-xs text-[#91a397] group-hover:text-[#d8c28f]">Build in the open</span>
+              </span>
+              <ArrowUpRight className="size-4 text-[#d8c28f]" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-4 border-t border-[#315044] pt-5 text-[10px] leading-relaxed sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p>© {new Date().getFullYear()} Atlas Sanctum</p>
+          <p className="mt-2 max-w-xl normal-case tracking-normal text-[#91a397]">Demonstrations may use clearly labelled sample data. We do not claim outcomes without evidence.</p>
+        </div>
+        <p className="uppercase tracking-[0.14em] text-[#d8c28f]">Built in the open, for the common good.</p>
+      </div>
+    </footer>
     </main>
   )
 }
