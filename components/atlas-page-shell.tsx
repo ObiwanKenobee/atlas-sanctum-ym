@@ -1,0 +1,10 @@
+import Link from 'next/link'
+import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+
+export function AtlasPageShell({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children: React.ReactNode }) {
+  return <main className="min-h-screen bg-[#f5f1e8] text-[#17382d]"><header className="border-b border-[#d4cebd] bg-[#f7f3ea] px-5 py-5 sm:px-8"><div className="mx-auto flex max-w-7xl items-center justify-between"><Link href="/" className="flex items-center gap-3" aria-label="Atlas Sanctum home"><span className="grid size-9 place-items-center border border-[#b59451]"><span className="relative block size-5 rotate-45 border border-[#b59451]"><span className="absolute left-1/2 top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#b59451]" /></span></span><span className="font-serif text-lg tracking-[0.15em]">ATLAS <span className="font-sans text-[9px] tracking-[0.24em]">SANCTUM</span></span></Link><Link href="/workspace" className="text-[10px] uppercase tracking-[0.18em] text-[#687168] hover:text-[#17382d]">Open workspace <ArrowUpRight className="ml-1 inline size-3" /></Link></div></header><section className="mx-auto max-w-7xl px-5 pb-16 pt-20 sm:px-8 lg:pb-24 lg:pt-28"><Link href="/" className="inline-flex items-center gap-2 text-xs text-[#687168] hover:text-[#17382d]"><ArrowLeft className="size-3.5" /> Back to Atlas</Link><p className="mt-14 font-mono text-[10px] uppercase tracking-[0.2em] text-[#a07837]">{eyebrow}</p><h1 className="mt-4 max-w-5xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.05em] sm:text-8xl">{title}</h1><p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#687168]">{intro}</p>{children}</section></main>
+}
+
+export function NumberedStep({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+  return <article className="border-t border-[#c9c2b1] pt-5"><p className="font-mono text-[10px] tracking-[0.18em] text-[#a07837]">{number}</p><h2 className="mt-5 font-serif text-3xl font-light leading-tight">{title}</h2><p className="mt-3 text-sm leading-relaxed text-[#687168]">{children}</p></article>
+}

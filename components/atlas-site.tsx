@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
+import AtlasDonate from '@/components/atlas-donate'
+import AtlasFounder from '@/components/atlas-founder'
 
 const locations = {
   Turkana: {
@@ -43,6 +45,43 @@ const locations = {
 }
 
 type LocationName = keyof typeof locations
+
+const partnerships = [
+  { name: 'Kenya Climate Innovation Center', short: 'KCIC', type: 'Prospective partner', copy: 'Climate innovation, enterprise development, and potential pilot pathways.', website: 'https://kenyacic.org' },
+  { name: 'Water Sector Trust Fund', short: 'WaterFund', type: 'Prospective partner', copy: 'Water access, infrastructure prioritization, and public-service outcomes.', website: 'https://waterfund.go.ke' },
+  { name: 'Kenya Agricultural and Livestock Research Organization', short: 'KALRO', type: 'Prospective research partner', copy: 'Agricultural evidence, research discovery, and climate-resilient food systems.', website: 'https://kalro.org' },
+  { name: '@iLabAfrica, Strathmore University', short: '@iLabAfrica', type: 'Prospective research partner', copy: 'Technical research, applied innovation, and independent evaluation.', website: 'https://ilabafrica.strathmore.edu' },
+  { name: 'United Nations Development Programme', short: 'UNDP', type: 'Institutional engagement target', copy: 'Inclusive development, public-sector innovation, and experimentation.', website: 'https://undp.org' },
+  { name: 'World Resources Institute', short: 'WRI', type: 'Research ecosystem target', copy: 'Climate, cities, forests, and evidence-based environmental decisions.', website: 'https://wri.org' },
+  { name: 'OpenFn', short: 'OpenFn', type: 'Technical ecosystem target', copy: 'Open-source data integration and workflow automation for connected institutional systems.', website: 'https://openfn.org' },
+  { name: 'KoboToolbox', short: 'KoboToolbox', type: 'Technical ecosystem target', copy: 'Field data collection for humanitarian and development work.', website: 'https://kobotoolbox.org' },
+]
+
+function PartnershipCarousel() {
+  const [active, setActive] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % partnerships.length), 4500)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const visible = [0, 1, 2].map((offset) => partnerships[(active + offset) % partnerships.length])
+
+  return (
+    <section id="partnerships" aria-labelledby="partnerships-heading" className="border-y border-[#c9c2b1] bg-[#efe9dc] px-5 py-16 lg:px-10 lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div><SectionLabel>Partnership constellation</SectionLabel><h2 id="partnerships-heading" className="max-w-xl font-serif text-4xl font-light leading-[1.05] tracking-[-0.03em] sm:text-5xl">Built with the people closest to the work.</h2></div>
+          <p className="max-w-xs text-sm leading-relaxed text-[#687168]">A growing network of prospective partners across evidence, implementation, and technical infrastructure.</p>
+        </div>
+        <div className="grid gap-px overflow-hidden border border-[#c9c2b1] bg-[#c9c2b1] md:grid-cols-3">
+          {visible.map((partner, index) => <a key={`${partner.name}-${active}`} href={partner.website} target="_blank" rel="noreferrer" className="group flex min-h-[245px] flex-col justify-between bg-[#f7f3ea] p-6 transition-colors hover:bg-[#f7efd7] sm:p-8"><div><div className="flex items-start justify-between gap-4"><span className="font-serif text-3xl text-[#17382d]">{partner.short}</span><ArrowUpRight className="size-4 text-[#a07837] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" /></div><p className="mt-8 text-[10px] uppercase tracking-[0.17em] text-[#a07837]">{partner.type}</p><h3 className="mt-2 font-serif text-2xl font-light leading-tight">{partner.name}</h3><p className="mt-3 text-sm leading-relaxed text-[#687168]">{partner.copy}</p></div><span className="mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-[#a07837]">{partner.website.replace('https://', '')}</span></a>)}
+        </div>
+        <div className="mt-6 flex items-center justify-between"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#687168]">{String(active + 1).padStart(2, '0')} — {String(partnerships.length).padStart(2, '0')} / rotating network</p><div className="flex gap-2" role="tablist" aria-label="Partnership slides">{partnerships.map((partner, index) => <button key={partner.name} type="button" role="tab" aria-selected={index === active} aria-label={`Show partnership ${index + 1}: ${partner.short}`} onClick={() => setActive(index)} className={`h-1.5 transition-all ${index === active ? 'w-8 bg-[#a07837]' : 'w-1.5 bg-[#b9b29f] hover:bg-[#a07837]'}`} />)}</div></div>
+      </div>
+    </section>
+  )
+}
 
 function Mark({ light = false }: { light?: boolean }) {
   return (
@@ -133,9 +172,40 @@ function ObservatoryDemo() {
   )
 }
 
+const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
+const navigation = [
+  { label: 'Observatory', href: '#observatory' },
+  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence']] },
+  { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
+  { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
+{ label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
+ { label: 'Partnerships', items: [['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
+] as const
+
+function openPilotFromHeader() {
+  window.dispatchEvent(new Event('atlas:open-pilot'))
+}
+
+function SiteNavigation() {
+  const [open, setOpen] = useState<string | null>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(null); setMobileOpen(false) } }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [])
+
+  return <>
+    <nav className="hidden items-center gap-6 text-[10px] uppercase tracking-[0.18em] text-[#d1d3c6] lg:flex" aria-label="Primary navigation">
+      {navigation.map((item) => 'items' in item ? <div key={item.label} className="relative"><button type="button" aria-expanded={open === item.label} aria-haspopup="true" onClick={() => setOpen(open === item.label ? null : item.label)} className="inline-flex items-center gap-1 transition-colors hover:text-[#d8c28f] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">{item.label}<ChevronDown className={`size-3 transition-transform ${open === item.label ? 'rotate-180' : ''}`} /></button>{open === item.label && <div className="absolute right-0 top-full z-40 mt-4 w-72 border border-[#547064] bg-[#17382d] p-2 normal-case tracking-normal shadow-[0_18px_40px_rgba(0,0,0,0.22)]">{item.items.map(([label, href]) => <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined} onClick={() => setOpen(null)} className="block px-3 py-3 text-xs text-[#d1d3c6] hover:bg-[#285342] hover:text-[#f7f0df] focus:bg-[#285342] focus:outline-none">{label}</a>)}</div>}</div> : <a key={item.label} href={item.href} className="transition-colors hover:text-[#d8c28f] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">{item.label}</a>)}
+      <button type="button" onClick={openPilotFromHeader} className="border border-[#d8c28f] px-4 py-2 text-[#f7f0df] hover:bg-[#d8c28f] hover:text-[#17382d] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">Discuss a pilot</button>
+    </nav>
+    <button type="button" className="lg:hidden" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button>
+    {mobileOpen && <nav className="absolute left-5 right-5 top-20 z-30 flex max-h-[calc(100vh-6rem)] flex-col gap-1 overflow-y-auto border border-[#547064] bg-[#17382d] p-4 text-xs uppercase tracking-[0.16em] lg:hidden" aria-label="Mobile navigation">{navigation.map((item) => 'items' in item ? <details key={item.label} open={open === item.label} onToggle={(event) => setOpen(event.currentTarget.open ? item.label : null)} className="border-b border-[#315044] last:border-b-0"><summary className="flex cursor-pointer list-none items-center justify-between py-3 text-[#f7f0df] focus:outline-none focus:ring-2 focus:ring-[#d8c28f]"><span>{item.label}</span><ChevronDown className="size-3" /></summary><div className="flex flex-col pb-2 pl-3 normal-case tracking-normal">{item.items.map(([label, href]) => <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined} onClick={() => setMobileOpen(false)} className="py-2 text-[#b9c0b5] hover:text-[#f7f0df]">{label}</a>)}</div></details> : <a key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className="border-b border-[#315044] py-3 text-[#f7f0df] last:border-b-0">{item.label}</a>)}<button type="button" onClick={() => { setMobileOpen(false); openPilotFromHeader() }} className="mt-3 bg-[#d8c28f] px-4 py-3 text-left text-[10px] font-semibold tracking-[0.14em] text-[#17382d]">Discuss a pilot</button></nav>}
+  </>
+}
+
 export default function AtlasSite() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const navItems = ['Observatory', 'Platform', 'Solutions', 'Commons', 'Research', 'Partnerships']
   return (
     <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]">
       <section className="relative min-h-[720px] overflow-hidden bg-[#17382d] text-[#f7f0df]">
@@ -147,6 +217,8 @@ export default function AtlasSite() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-24 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-32"><div><SectionLabel>The condition</SectionLabel><h2 className="max-w-sm font-serif text-5xl font-light leading-[1.05] tracking-[-0.03em]">The work is not short on data. It is short on connection.</h2></div><div className="max-w-2xl"><p className="text-2xl font-light leading-relaxed text-[#455148]">Evidence lives in one system. Resources in another. Decisions in meetings. Outcomes in stories that arrive too late.</p><p className="mt-8 max-w-xl text-sm leading-relaxed text-[#687168]">The result is a gap between what institutions know and what they can responsibly do. Atlas exists to close that gap—with open infrastructure for seeing clearly, acting carefully, and learning in public.</p><div className="mt-10 grid gap-6 border-t border-[#c9c2b1] pt-6 sm:grid-cols-3"><div><p className="font-serif text-3xl">01</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Fragmented evidence creates blind spots.</p></div><div><p className="font-serif text-3xl">02</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Unclear decisions delay useful capital.</p></div><div><p className="font-serif text-3xl">03</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Weak feedback loops repeat old mistakes.</p></div></div></div></section>
+
+      <PartnershipCarousel />
 
       <section id="observatory" className="bg-[#e9e5d8] px-5 py-24 lg:px-10 lg:py-32"><div className="mx-auto max-w-7xl"><div className="mb-14 flex flex-col justify-between gap-8 lg:flex-row lg:items-end"><div><SectionLabel>Atlas Regenerative Decision Engine</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.05] tracking-[-0.03em] sm:text-6xl">From signal to stewardship.</h2></div><p className="max-w-sm text-sm leading-relaxed text-[#687168]">A transparent decision-support system for institutions working on complex, place-based challenges.</p></div><ObservatoryDemo /></div></section>
 
@@ -162,6 +234,10 @@ export default function AtlasSite() {
 
       <section id="partnerships" className="bg-[#b59451] px-5 py-24 text-[#17382d] lg:px-10 lg:py-28"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><SectionLabel>Partnerships & pilots</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.02] tracking-[-0.03em] sm:text-7xl">Bring us a hard question.</h2><p className="mt-6 max-w-lg text-sm leading-relaxed text-[#3c5143]">We work with organizations ready to make a decision more grounded, more accountable, and more useful to the people it affects.</p></div><a href="mailto:hello@atlassanctum.org" className="inline-flex items-center gap-3 border border-[#17382d] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] hover:bg-[#17382d] hover:text-[#f7f0df]">Start a conversation <ArrowUpRight className="size-4" /></a></div></section>
 
+      <AtlasFounder />
+
+      <AtlasDonate />
+
       <footer id="about" className="bg-[#102a21] px-5 py-12 text-[#b9c0b5] lg:px-10 lg:py-16">
       <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1.25fr] lg:gap-16">
         <div>
@@ -175,9 +251,9 @@ export default function AtlasSite() {
           <div className="flex flex-col items-start gap-3 text-sm">
             {[
               { label: 'Observatory', href: '#observatory' },
-              { label: 'Platform', href: '#platform' },
-              { label: 'Solutions', href: '#solutions' },
-              { label: 'Commons', href: '#commons' },
+              { label: 'Platform', href: '/platform' },
+              { label: 'Solutions', href: '/solutions/water-climate-resilience' },
+              { label: 'Commons', href: '/community/open-source-projects' },
             ].map((item) => (
               <a key={item.label} href={item.href} className="transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
                 {item.label}
@@ -217,6 +293,7 @@ export default function AtlasSite() {
         <p className="uppercase tracking-[0.14em] text-[#d8c28f]">Built in the open, for the common good.</p>
       </div>
     </footer>
+
     </main>
   )
 }
