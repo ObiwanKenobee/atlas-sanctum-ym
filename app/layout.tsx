@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import PwaRegister from '@/components/pwa-register'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://atlas-sanctum-ym.vercel.app'
 
@@ -58,6 +59,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: 'Atlas Sanctum', alternateName: 'Atlas Sanctum Intelligence', url: siteUrl, logo: `${siteUrl}/icon.svg`, description: 'Open, evidence-led decision infrastructure for a more flourishing world.', sameAs: ['https://tech-craft-five.vercel.app', 'https://github.com/ObiwanKenobee'] }, { '@type': 'WebSite', name: 'Atlas Sanctum', url: siteUrl }] }) }} />
+        <PwaRegister />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

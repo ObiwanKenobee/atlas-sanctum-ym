@@ -324,6 +324,7 @@ The platform is being built in ordered increments. Only increment 1 is complete.
 | 8 | Bounded agent council framework | Planned | Multiple advisory agents with scoped tools, provenance, and mandatory human review |
 | 9 | Evidence ingestion adapters | Planned | Provenance-preserving adapters for tools such as KoboToolbox and OpenFn, with consent controls |
 | 10 | Production operations and CI | Planned | Containerized deployment, CI, observability, backups, threat model, and production identity integration |
+| 11 | Platform blog | Planned | Publish accessible, source-linked writing about field evidence, implementation lessons, governance, and responsible technology |
 
 Planned increments are intentions, not delivered capabilities. This table will be updated as each increment is verified.
 
