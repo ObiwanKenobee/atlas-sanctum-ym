@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
 
 const locations = {
@@ -43,6 +43,43 @@ const locations = {
 }
 
 type LocationName = keyof typeof locations
+
+const partnerships = [
+  { name: 'Kenya Climate Innovation Center', short: 'KCIC', type: 'Prospective partner', copy: 'Climate innovation, enterprise development, and potential pilot pathways.', website: 'https://kenyacic.org' },
+  { name: 'Water Sector Trust Fund', short: 'WaterFund', type: 'Prospective partner', copy: 'Water access, infrastructure prioritization, and public-service outcomes.', website: 'https://waterfund.go.ke' },
+  { name: 'Kenya Agricultural and Livestock Research Organization', short: 'KALRO', type: 'Prospective research partner', copy: 'Agricultural evidence, research discovery, and climate-resilient food systems.', website: 'https://kalro.org' },
+  { name: '@iLabAfrica, Strathmore University', short: '@iLabAfrica', type: 'Prospective research partner', copy: 'Technical research, applied innovation, and independent evaluation.', website: 'https://ilabafrica.strathmore.edu' },
+  { name: 'United Nations Development Programme', short: 'UNDP', type: 'Institutional engagement target', copy: 'Inclusive development, public-sector innovation, and experimentation.', website: 'https://undp.org' },
+  { name: 'World Resources Institute', short: 'WRI', type: 'Research ecosystem target', copy: 'Climate, cities, forests, and evidence-based environmental decisions.', website: 'https://wri.org' },
+  { name: 'OpenFn', short: 'OpenFn', type: 'Technical ecosystem target', copy: 'Open-source data integration and workflow automation for connected institutional systems.', website: 'https://openfn.org' },
+  { name: 'KoboToolbox', short: 'KoboToolbox', type: 'Technical ecosystem target', copy: 'Field data collection for humanitarian and development work.', website: 'https://kobotoolbox.org' },
+]
+
+function PartnershipCarousel() {
+  const [active, setActive] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % partnerships.length), 4500)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const visible = [0, 1, 2].map((offset) => partnerships[(active + offset) % partnerships.length])
+
+  return (
+    <section id="partnerships" aria-labelledby="partnerships-heading" className="border-y border-[#c9c2b1] bg-[#efe9dc] px-5 py-16 lg:px-10 lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div><SectionLabel>Partnership constellation</SectionLabel><h2 id="partnerships-heading" className="max-w-xl font-serif text-4xl font-light leading-[1.05] tracking-[-0.03em] sm:text-5xl">Built with the people closest to the work.</h2></div>
+          <p className="max-w-xs text-sm leading-relaxed text-[#687168]">A growing network of prospective partners across evidence, implementation, and technical infrastructure.</p>
+        </div>
+        <div className="grid gap-px overflow-hidden border border-[#c9c2b1] bg-[#c9c2b1] md:grid-cols-3">
+          {visible.map((partner, index) => <a key={`${partner.name}-${active}`} href={partner.website} target="_blank" rel="noreferrer" className="group flex min-h-[245px] flex-col justify-between bg-[#f7f3ea] p-6 transition-colors hover:bg-[#f7efd7] sm:p-8"><div><div className="flex items-start justify-between gap-4"><span className="font-serif text-3xl text-[#17382d]">{partner.short}</span><ArrowUpRight className="size-4 text-[#a07837] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" /></div><p className="mt-8 text-[10px] uppercase tracking-[0.17em] text-[#a07837]">{partner.type}</p><h3 className="mt-2 font-serif text-2xl font-light leading-tight">{partner.name}</h3><p className="mt-3 text-sm leading-relaxed text-[#687168]">{partner.copy}</p></div><span className="mt-6 font-mono text-[10px] uppercase tracking-[0.15em] text-[#a07837]">{partner.website.replace('https://', '')}</span></a>)}
+        </div>
+        <div className="mt-6 flex items-center justify-between"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#687168]">{String(active + 1).padStart(2, '0')} — {String(partnerships.length).padStart(2, '0')} / rotating network</p><div className="flex gap-2" role="tablist" aria-label="Partnership slides">{partnerships.map((partner, index) => <button key={partner.name} type="button" role="tab" aria-selected={index === active} aria-label={`Show partnership ${index + 1}: ${partner.short}`} onClick={() => setActive(index)} className={`h-1.5 transition-all ${index === active ? 'w-8 bg-[#a07837]' : 'w-1.5 bg-[#b9b29f] hover:bg-[#a07837]'}`} />)}</div></div>
+      </div>
+    </section>
+  )
+}
 
 function Mark({ light = false }: { light?: boolean }) {
   return (
@@ -102,6 +139,8 @@ export default function AtlasSite() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-24 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-32"><div><SectionLabel>The condition</SectionLabel><h2 className="max-w-sm font-serif text-5xl font-light leading-[1.05] tracking-[-0.03em]">The work is not short on data. It is short on connection.</h2></div><div className="max-w-2xl"><p className="text-2xl font-light leading-relaxed text-[#455148]">Evidence lives in one system. Resources in another. Decisions in meetings. Outcomes in stories that arrive too late.</p><p className="mt-8 max-w-xl text-sm leading-relaxed text-[#687168]">The result is a gap between what institutions know and what they can responsibly do. Atlas exists to close that gap—with open infrastructure for seeing clearly, acting carefully, and learning in public.</p><div className="mt-10 grid gap-6 border-t border-[#c9c2b1] pt-6 sm:grid-cols-3"><div><p className="font-serif text-3xl">01</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Fragmented evidence creates blind spots.</p></div><div><p className="font-serif text-3xl">02</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Unclear decisions delay useful capital.</p></div><div><p className="font-serif text-3xl">03</p><p className="mt-2 text-xs leading-relaxed text-[#687168]">Weak feedback loops repeat old mistakes.</p></div></div></div></section>
+
+      <PartnershipCarousel />
 
       <section id="observatory" className="bg-[#e9e5d8] px-5 py-24 lg:px-10 lg:py-32"><div className="mx-auto max-w-7xl"><div className="mb-14 flex flex-col justify-between gap-8 lg:flex-row lg:items-end"><div><SectionLabel>Atlas Regenerative Decision Engine</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.05] tracking-[-0.03em] sm:text-6xl">From signal to stewardship.</h2></div><p className="max-w-sm text-sm leading-relaxed text-[#687168]">A transparent decision-support system for institutions working on complex, place-based challenges.</p></div><ObservatoryDemo /></div></section>
 
