@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Bell, Check, ChevronDown, CircleHelp, Filter, Layers3, Map, Menu, Search, Settings2, ShieldCheck, SlidersHorizontal, X } from 'lucide-react'
+import WorkspaceSectionView from '@/components/workspace-section-view'
 
 const regions = [
   { name: 'Turkana', country: 'Kenya', signal: 'Water stress', score: 78, freshness: '14 days', tone: 'amber' },
@@ -34,6 +35,8 @@ export default function AtlasWorkspace() {
   const [mobileNav, setMobileNav] = useState(false)
   const currentRegion = useMemo(() => regions.find((region) => region.name === selectedRegion) ?? regions[0], [selectedRegion])
 
+  if (active !== 'Observatory') return <WorkspaceSectionView active={active as 'Decisions' | 'Evidence ledger' | 'Interventions' | 'Partners'} onSelect={setActive} />
+
   return (
     <main className="min-h-screen bg-[#f5f1e8] text-[#17382d]">
       <header className="border-b border-[#d4cebd] bg-[#f7f3ea] px-5 py-4 lg:px-8">
@@ -44,7 +47,7 @@ export default function AtlasWorkspace() {
       </header>
       <div className="mx-auto flex max-w-[1500px]">
         <aside className={`${mobileNav ? 'block' : 'hidden'} absolute inset-x-0 top-[73px] z-20 border-b border-[#d4cebd] bg-[#f7f3ea] p-5 lg:static lg:block lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-r lg:p-6`}>
-          <div className="flex flex-col gap-1"><p className="mb-3 px-3 font-mono text-[9px] uppercase tracking-[0.2em] text-[#a07837]">Workspace</p>{['Observatory', 'Decisions', 'Evidence ledger', 'Interventions', 'Partners'].map((item) => item === 'Evidence ledger' ? <a key={item} href="/records" onClick={() => setMobileNav(false)} className={`flex items-center justify-between px-3 py-2.5 text-left text-sm ${active === item ? 'bg-[#17382d] text-[#f7f0df]' : 'text-[#687168] hover:bg-[#eee9dc] hover:text-[#17382d]'}`}><span>{item}</span><span className={`text-[10px] ${active === item ? 'text-[#d8c28f]' : 'text-[#a07837]'}`}>0</span></a> : <button key={item} onClick={() => { setActive(item); setMobileNav(false) }} className={`flex items-center justify-between px-3 py-2.5 text-left text-sm ${active === item ? 'bg-[#17382d] text-[#f7f0df]' : 'text-[#687168] hover:bg-[#eee9dc] hover:text-[#17382d]'}`}><span>{item}</span>{item === 'Decisions' && <span className={`text-[10px] ${active === item ? 'text-[#d8c28f]' : 'text-[#a07837]'}`}>3</span>}</button>)}</div>
+          <div className="flex flex-col gap-1"><p className="mb-3 px-3 font-mono text-[9px] uppercase tracking-[0.2em] text-[#a07837]">Workspace</p>{['Observatory', 'Decisions', 'Evidence ledger', 'Interventions', 'Partners'].map((item) => item === 'Evidence ledger' ? <button key={item} onClick={() => { setActive(item); setMobileNav(false) }} className={`flex items-center justify-between px-3 py-2.5 text-left text-sm ${active === item ? 'bg-[#17382d] text-[#f7f0df]' : 'text-[#687168] hover:bg-[#eee9dc] hover:text-[#17382d]'}`}><span>{item}</span><span className={`text-[10px] ${active === item ? 'text-[#d8c28f]' : 'text-[#a07837]'}`}>0</span></button> : <button key={item} onClick={() => { setActive(item); setMobileNav(false) }} className={`flex items-center justify-between px-3 py-2.5 text-left text-sm ${active === item ? 'bg-[#17382d] text-[#f7f0df]' : 'text-[#687168] hover:bg-[#eee9dc] hover:text-[#17382d]'}`}><span>{item}</span>{item === 'Decisions' && <span className={`text-[10px] ${active === item ? 'text-[#d8c28f]' : 'text-[#a07837]'}`}>3</span>}</button>)}</div>
           <div className="mt-10 border-t border-[#d4cebd] pt-5"><p className="mb-3 px-3 font-mono text-[9px] uppercase tracking-[0.2em] text-[#a07837]">Current portfolio</p><div className="flex flex-col gap-3 px-3 text-xs text-[#687168]"><p className="flex items-center justify-between"><span>East Africa pilots</span><span className="text-[#17382d]">04</span></p><p className="flex items-center justify-between"><span>Evidence points</span><span className="text-[#17382d]">142</span></p><p className="flex items-center justify-between"><span>Open decisions</span><span className="text-[#17382d]">03</span></p></div></div>
           <div className="mt-auto hidden border-t border-[#d4cebd] pt-5 lg:mt-32 lg:block"><a href="/governance" className="flex w-full items-center gap-2 px-3 py-2 text-xs text-[#687168] hover:text-[#17382d]"><Settings2 className="size-3.5" /> Governance settings</a><button className="flex w-full items-center gap-2 px-3 py-2 text-xs text-[#687168] hover:text-[#17382d]"><CircleHelp className="size-3.5" /> Help center</button></div>
         </aside>
