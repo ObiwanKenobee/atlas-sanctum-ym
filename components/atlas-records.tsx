@@ -7,8 +7,8 @@ type RecordItem = { id: string; title: string; region: string; category: string;
 
 const categories = ['Water access', 'Food systems', 'Climate resilience', 'Public health', 'Other']
 
-export default function AtlasRecords({ records }: { records: RecordItem[] }) {
-  const [mode, setMode] = useState<'list' | 'new'>('list')
+export default function AtlasRecords({ records, initialMode = 'list' }: { records: RecordItem[]; initialMode?: 'list' | 'new' }) {
+  const [mode, setMode] = useState<'list' | 'new'>(initialMode)
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState('')
   const [form, setForm] = useState({ title: '', region: '', category: categories[0], observedOn: new Date().toISOString().slice(0, 10), summary: '', sourceName: '' })
