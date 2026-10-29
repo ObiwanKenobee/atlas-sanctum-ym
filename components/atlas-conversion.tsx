@@ -17,6 +17,13 @@ export default function AtlasConversion({ children }: { children: ReactNode }) {
     } catch {
       setWelcomeOpen(true)
     }
+
+    const handleOpenPilot = () => {
+      setWelcomeOpen(false)
+      setPilotOpen(true)
+    }
+    window.addEventListener('atlas:open-pilot', handleOpenPilot)
+    return () => window.removeEventListener('atlas:open-pilot', handleOpenPilot)
   }, [])
 
   function dismissWelcome() {
