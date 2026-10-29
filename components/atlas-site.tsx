@@ -125,16 +125,46 @@ function ObservatoryDemo() {
   )
 }
 
+const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
+const navigation = [
+  { label: 'Observatory', href: '#observatory' },
+  { label: 'Platform', items: [['Regenerative Decision Engine', '#platform'], ['How It Works', '#platform'], ['Evidence & Decision Records', '#observatory']] },
+  { label: 'Solutions', items: [['Water & Climate Resilience', '#solutions'], ['Agriculture & Food Systems', '#solutions'], ['Programme & Grant Accountability', '#solutions']] },
+  { label: 'Commons', items: [['Open-source Projects', '#commons'], ['Contribute on GitHub', githubUrl], ['Principles & Governance', '#research']] },
+  { label: 'Research', items: [['Research & Insights', '#research'], ['Methods & Data Sources', '#observatory'], ['Field Notes & Case Studies', '#research']] },
+  { label: 'Partnerships', items: [['Pilot Opportunities', '#partnerships'], ['Research & Implementation', '#partnerships'], ['Open-source Collaboration', '#commons']] },
+] as const
+
+function openPilotFromHeader() {
+  window.dispatchEvent(new Event('atlas:open-pilot'))
+}
+
+function SiteNavigation() {
+  const [open, setOpen] = useState<string | null>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(null); setMobileOpen(false) } }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [])
+
+  return <>
+    <nav className="hidden items-center gap-6 text-[10px] uppercase tracking-[0.18em] text-[#d1d3c6] lg:flex" aria-label="Primary navigation">
+      {navigation.map((item) => 'items' in item ? <div key={item.label} className="relative"><button type="button" aria-expanded={open === item.label} aria-haspopup="true" onClick={() => setOpen(open === item.label ? null : item.label)} className="inline-flex items-center gap-1 transition-colors hover:text-[#d8c28f] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">{item.label}<ChevronDown className={`size-3 transition-transform ${open === item.label ? 'rotate-180' : ''}`} /></button>{open === item.label && <div className="absolute right-0 top-full z-40 mt-4 w-72 border border-[#547064] bg-[#17382d] p-2 normal-case tracking-normal shadow-[0_18px_40px_rgba(0,0,0,0.22)]">{item.items.map(([label, href]) => <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined} onClick={() => setOpen(null)} className="block px-3 py-3 text-xs text-[#d1d3c6] hover:bg-[#285342] hover:text-[#f7f0df] focus:bg-[#285342] focus:outline-none">{label}</a>)}</div>}</div> : <a key={item.label} href={item.href} className="transition-colors hover:text-[#d8c28f] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">{item.label}</a>)}
+      <button type="button" onClick={openPilotFromHeader} className="border border-[#d8c28f] px-4 py-2 text-[#f7f0df] hover:bg-[#d8c28f] hover:text-[#17382d] focus:outline-none focus:ring-2 focus:ring-[#d8c28f] focus:ring-offset-2 focus:ring-offset-[#17382d]">Discuss a pilot</button>
+    </nav>
+    <button type="button" className="lg:hidden" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X /> : <Menu />}</button>
+    {mobileOpen && <nav className="absolute left-5 right-5 top-20 z-30 flex max-h-[calc(100vh-6rem)] flex-col gap-1 overflow-y-auto border border-[#547064] bg-[#17382d] p-4 text-xs uppercase tracking-[0.16em] lg:hidden" aria-label="Mobile navigation">{navigation.map((item) => 'items' in item ? <details key={item.label} open={open === item.label} onToggle={(event) => setOpen(event.currentTarget.open ? item.label : null)} className="border-b border-[#315044] last:border-b-0"><summary className="flex cursor-pointer list-none items-center justify-between py-3 text-[#f7f0df] focus:outline-none focus:ring-2 focus:ring-[#d8c28f]"><span>{item.label}</span><ChevronDown className="size-3" /></summary><div className="flex flex-col pb-2 pl-3 normal-case tracking-normal">{item.items.map(([label, href]) => <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noreferrer' : undefined} onClick={() => setMobileOpen(false)} className="py-2 text-[#b9c0b5] hover:text-[#f7f0df]">{label}</a>)}</div></details> : <a key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className="border-b border-[#315044] py-3 text-[#f7f0df] last:border-b-0">{item.label}</a>)}<button type="button" onClick={() => { setMobileOpen(false); openPilotFromHeader() }} className="mt-3 bg-[#d8c28f] px-4 py-3 text-left text-[10px] font-semibold tracking-[0.14em] text-[#17382d]">Discuss a pilot</button></nav>}
+  </>
+}
+
 export default function AtlasSite() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const navItems = ['Observatory', 'Platform', 'Solutions', 'Commons', 'Research', 'Partnerships']
   return (
     <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]">
       <section className="relative min-h-[720px] overflow-hidden bg-[#17382d] text-[#f7f0df]">
         <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'url(/atlas-landscape.png)', backgroundPosition: 'center', backgroundSize: 'cover' }} /><div className="absolute inset-0 bg-gradient-to-r from-[#17382d] via-[#17382d]/90 to-[#17382d]/45" />
-        <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 lg:px-10"><Mark light /><nav className="hidden items-center gap-7 text-[10px] uppercase tracking-[0.18em] text-[#d1d3c6] lg:flex">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} className="transition-colors hover:text-[#d8c28f]">{item}</a>)}<a href="#about" className="border border-[#d8c28f] px-4 py-2 text-[#f7f0df] hover:bg-[#d8c28f] hover:text-[#17382d]">About Atlas</a></nav><button className="lg:hidden" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button></header>
-        {menuOpen && <nav className="absolute left-5 right-5 top-20 z-30 flex flex-col gap-4 border border-[#547064] bg-[#17382d] p-5 text-xs uppercase tracking-[0.18em] lg:hidden">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>)}</nav>}
-        <div className="relative z-10 mx-auto flex max-w-7xl items-end px-5 pb-24 pt-28 lg:min-h-[620px] lg:px-10 lg:pb-24"><div className="max-w-3xl"><SectionLabel light>Institutional intelligence infrastructure</SectionLabel><h1 className="max-w-3xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.04em] sm:text-8xl">Intelligence for a <em className="text-[#d8c28f]">more flourishing</em> world.</h1><p className="mt-8 max-w-xl text-lg font-light leading-relaxed text-[#d1d3c6]">Atlas Sanctum connects places, problems, evidence, resources, decisions, and measurable outcomes—so responsible action can move at the speed of understanding.</p><div className="mt-10 flex flex-wrap gap-3"><a href="/workspace" className="inline-flex items-center gap-3 bg-[#d8c28f] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#17382d] hover:bg-[#f0dfb0]">Enter the workspace <ArrowUpRight className="size-4" /></a><a href="#partnerships" className="inline-flex items-center gap-3 border border-[#aab8a9] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#f7f0df] hover:border-[#d8c28f]">Discuss a pilot</a></div></div></div>
+        <header className="sticky top-0 z-20 mx-auto flex max-w-7xl items-center justify-between bg-[#17382d]/95 px-5 py-6 backdrop-blur-sm lg:px-10"><Mark light /><SiteNavigation /></header>
+        <div className="relative z-10 mx-auto flex max-w-7xl items-end px-5 pb-24 pt-28 lg:min-h-[620px] lg:px-10 lg:pb-24"><div className="max-w-3xl"><SectionLabel light>Institutional intelligence infrastructure</SectionLabel><h1 className="max-w-3xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.04em] sm:text-8xl">Intelligence for a <em className="text-[#d8c28f]">more flourishing</em> world.</h1><p className="mt-8 max-w-xl text-lg font-light leading-relaxed text-[#d1d3c6]">Atlas Sanctum connects places, problems, evidence, resources, decisions, and measurable outcomes—so responsible action can move at the speed of understanding.</p><div className="mt-10 flex flex-wrap gap-3"><a href="/workspace" className="inline-flex items-center gap-3 bg-[#d8c28f] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#17382d] hover:bg-[#f0dfb0]">Enter the workspace <ArrowUpRight className="size-4" /></a><button type="button" onClick={openPilotFromHeader} className="inline-flex items-center gap-3 border border-[#aab8a9] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#f7f0df] hover:border-[#d8c28f]">Discuss a pilot</button></div></div></div>
         <div className="absolute bottom-0 right-0 z-10 hidden border-l border-t border-[#547064] bg-[#17382d]/70 px-8 py-5 backdrop-blur-sm lg:block"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#d8c28f]">Field note / 001</p><p className="mt-2 max-w-[210px] text-xs leading-relaxed text-[#d1d3c6]">Better decisions begin with a more honest picture of the whole.</p></div>
       </section>
 

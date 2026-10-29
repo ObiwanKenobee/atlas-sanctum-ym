@@ -12,6 +12,12 @@ export default function AtlasConversion({ children }: { children: ReactNode }) {
   const [newsletterState, setNewsletterState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   useEffect(() => {
+    const openFromHeader = () => openPilot()
+    window.addEventListener('atlas:open-pilot', openFromHeader)
+    return () => window.removeEventListener('atlas:open-pilot', openFromHeader)
+  }, [])
+
+  useEffect(() => {
     try {
       setWelcomeOpen(sessionStorage.getItem('atlas-welcome-dismissed') !== 'true')
     } catch {
