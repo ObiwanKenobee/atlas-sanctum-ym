@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
 import AtlasDonate from '@/components/atlas-donate'
-import AtlasFounder from '@/components/atlas-founder'
 
 const locations = {
   Turkana: {
@@ -179,7 +178,7 @@ const navigation = [
   { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
   { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
 { label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
- { label: 'Partnerships', items: [['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
+ { label: 'Partnerships', items: [['Work with Atlas', '/work-with-atlas'], ['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
 ] as const
 
 function openPilotFromHeader() {
@@ -210,8 +209,7 @@ export default function AtlasSite() {
     <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]">
       <section className="relative min-h-[720px] overflow-hidden bg-[#17382d] text-[#f7f0df]">
         <div className="absolute inset-0 opacity-25" style={{ backgroundImage: 'url(/atlas-landscape.png)', backgroundPosition: 'center', backgroundSize: 'cover' }} /><div className="absolute inset-0 bg-gradient-to-r from-[#17382d] via-[#17382d]/90 to-[#17382d]/45" />
-        <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 lg:px-10"><Mark light /><nav className="hidden items-center gap-7 text-[10px] uppercase tracking-[0.18em] text-[#d1d3c6] lg:flex">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} className="transition-colors hover:text-[#d8c28f]">{item}</a>)}<a href="/work-with-atlas" className="transition-colors hover:text-[#d8c28f]">Work with Atlas</a><a href="#about" className="border border-[#d8c28f] px-4 py-2 text-[#f7f0df] hover:bg-[#d8c28f] hover:text-[#17382d]">About Atlas</a></nav><button className="lg:hidden" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button></header>
-        {menuOpen && <nav className="absolute left-5 right-5 top-20 z-30 flex flex-col gap-4 border border-[#547064] bg-[#17382d] p-5 text-xs uppercase tracking-[0.18em] lg:hidden">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>)}<a href="/work-with-atlas" onClick={() => setMenuOpen(false)}>Work with Atlas</a></nav>}
+        <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 lg:px-10"><Mark light /><SiteNavigation /></header>
         <div className="relative z-10 mx-auto flex max-w-7xl items-end px-5 pb-24 pt-28 lg:min-h-[620px] lg:px-10 lg:pb-24"><div className="max-w-3xl"><SectionLabel light>Institutional intelligence infrastructure</SectionLabel><h1 className="max-w-3xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.04em] sm:text-8xl">Intelligence for a <em className="text-[#d8c28f]">more flourishing</em> world.</h1><p className="mt-8 max-w-xl text-lg font-light leading-relaxed text-[#d1d3c6]">Atlas Sanctum connects places, problems, evidence, resources, decisions, and measurable outcomes—so responsible action can move at the speed of understanding.</p><div className="mt-10 flex flex-wrap gap-3"><a href="/workspace" className="inline-flex items-center gap-3 bg-[#d8c28f] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#17382d] hover:bg-[#f0dfb0]">Enter the workspace <ArrowUpRight className="size-4" /></a><a href="#partnerships" className="inline-flex items-center gap-3 border border-[#aab8a9] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] text-[#f7f0df] hover:border-[#d8c28f]">Discuss a pilot</a></div></div></div>
         <div className="absolute bottom-0 right-0 z-10 hidden border-l border-t border-[#547064] bg-[#17382d]/70 px-8 py-5 backdrop-blur-sm lg:block"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#d8c28f]">Field note / 001</p><p className="mt-2 max-w-[210px] text-xs leading-relaxed text-[#d1d3c6]">Better decisions begin with a more honest picture of the whole.</p></div>
       </section>
@@ -233,8 +231,6 @@ export default function AtlasSite() {
       <section id="research" className="border-y border-[#c9c2b1] bg-[#efe9dc] px-5 py-24 lg:px-10 lg:py-32"><div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1fr]"><div><SectionLabel>Why Atlas</SectionLabel><h2 className="max-w-lg font-serif text-5xl font-light leading-[1.05]">Technology in service of truth, justice, stewardship, and service.</h2></div><div className="flex flex-col gap-6"><p className="text-xl font-light leading-relaxed text-[#455148]">Atlas is Christian-founded, but designed for broad collaboration. We believe the work of human flourishing asks for intellectual honesty, care for creation, and a bias toward serving people who are most affected by decisions.</p><div className="grid grid-cols-2 gap-x-6 gap-y-7 border-t border-[#c9c2b1] pt-7">{[['Truth','Say what the evidence can support.'],['Justice','Make power and trade-offs visible.'],['Stewardship','Treat resources and creation as entrusted.'],['Service','Build with, not merely for, communities.']].map(([title, copy]) => <div key={title}><CircleCheck className="size-4 text-[#a07837]" /><h3 className="mt-3 font-serif text-xl">{title}</h3><p className="mt-2 text-xs leading-relaxed text-[#687168]">{copy}</p></div>)}</div></div></div></section>
 
       <section id="partnerships" className="bg-[#b59451] px-5 py-24 text-[#17382d] lg:px-10 lg:py-28"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><SectionLabel>Partnerships & pilots</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.02] tracking-[-0.03em] sm:text-7xl">Bring us a hard question.</h2><p className="mt-6 max-w-lg text-sm leading-relaxed text-[#3c5143]">We work with organizations ready to make a decision more grounded, more accountable, and more useful to the people it affects.</p></div><a href="mailto:hello@atlassanctum.org" className="inline-flex items-center gap-3 border border-[#17382d] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] hover:bg-[#17382d] hover:text-[#f7f0df]">Start a conversation <ArrowUpRight className="size-4" /></a></div></section>
-
-      <AtlasFounder />
 
       <AtlasDonate />
 
