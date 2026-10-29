@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
 import AtlasDonate from '@/components/atlas-donate'
 import AtlasFounder from '@/components/atlas-founder'
+import AtlasSiteLinks from '@/components/atlas-site-links'
 
 const locations = {
   Turkana: {
@@ -250,9 +251,9 @@ export default function AtlasSite() {
           <div className="flex flex-col items-start gap-3 text-sm">
             {[
               { label: 'Observatory', href: '#observatory' },
-              { label: 'Platform', href: '#platform' },
-              { label: 'Solutions', href: '#solutions' },
-              { label: 'Commons', href: '#commons' },
+              { label: 'Platform', href: '/platform' },
+              { label: 'Solutions', href: '/solutions/water-climate-resilience' },
+              { label: 'Commons', href: '/community/open-source-projects' },
             ].map((item) => (
               <a key={item.label} href={item.href} className="transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
                 {item.label}
@@ -283,6 +284,8 @@ export default function AtlasSite() {
           </div>
         </div>
       </div>
+
+      <AtlasSiteLinks />
 
       <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-4 border-t border-[#315044] pt-5 text-[10px] leading-relaxed sm:flex-row sm:items-end sm:justify-between">
         <div>
