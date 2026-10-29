@@ -174,7 +174,7 @@ function ObservatoryDemo() {
 const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
 const navigation = [
   { label: 'Observatory', href: '#observatory' },
-  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence'], ['Ethical Finance', '/finance'], ['Humanitarian Network', '/humanitarian'], ['Regenerative Economy', '/regenerative'], ['Development Observatory', '/development'], ['Execution & Verification', '/execution'], ['Blog', '/blog']] },
+  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence'], ['Ethical Finance', '/finance'], ['Humanitarian Network', '/humanitarian'], ['Regenerative Economy', '/regenerative'], ['Development Observatory', '/development'], ['Execution & Verification', '/execution'], ['Governance & Privacy', '/governance'], ['Blog', '/blog']] },
   { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
   { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
 { label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
