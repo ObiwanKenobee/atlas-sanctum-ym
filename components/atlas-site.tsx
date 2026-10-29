@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
+import AtlasDonate from '@/components/atlas-donate'
+import AtlasFounder from '@/components/atlas-founder'
 
 const locations = {
   Turkana: {
@@ -173,11 +175,11 @@ function ObservatoryDemo() {
 const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
 const navigation = [
   { label: 'Observatory', href: '#observatory' },
-  { label: 'Platform', items: [['Regenerative Decision Engine', '#platform'], ['How It Works', '#platform'], ['Evidence & Decision Records', '#observatory']] },
-  { label: 'Solutions', items: [['Water & Climate Resilience', '#solutions'], ['Agriculture & Food Systems', '#solutions'], ['Programme & Grant Accountability', '#solutions']] },
-  { label: 'Commons', items: [['Open-source Projects', '#commons'], ['Contribute on GitHub', githubUrl], ['Principles & Governance', '#research']] },
-  { label: 'Research', items: [['Research & Insights', '#research'], ['Methods & Data Sources', '#observatory'], ['Field Notes & Case Studies', '#research']] },
-  { label: 'Partnerships', items: [['Pilot Opportunities', '#partnerships'], ['Research & Implementation', '#partnerships'], ['Open-source Collaboration', '#commons']] },
+  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence']] },
+  { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
+  { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
+{ label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
+ { label: 'Partnerships', items: [['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
 ] as const
 
 function openPilotFromHeader() {
@@ -231,6 +233,10 @@ export default function AtlasSite() {
 
       <section id="partnerships" className="bg-[#b59451] px-5 py-24 text-[#17382d] lg:px-10 lg:py-28"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 lg:flex-row lg:items-end"><div><SectionLabel>Partnerships & pilots</SectionLabel><h2 className="max-w-2xl font-serif text-5xl font-light leading-[1.02] tracking-[-0.03em] sm:text-7xl">Bring us a hard question.</h2><p className="mt-6 max-w-lg text-sm leading-relaxed text-[#3c5143]">We work with organizations ready to make a decision more grounded, more accountable, and more useful to the people it affects.</p></div><a href="mailto:hello@atlassanctum.org" className="inline-flex items-center gap-3 border border-[#17382d] px-5 py-3 text-xs font-semibold uppercase tracking-[0.15em] hover:bg-[#17382d] hover:text-[#f7f0df]">Start a conversation <ArrowUpRight className="size-4" /></a></div></section>
 
+      <AtlasFounder />
+
+      <AtlasDonate />
+
       <footer id="about" className="bg-[#102a21] px-5 py-12 text-[#b9c0b5] lg:px-10 lg:py-16">
       <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_1.25fr] lg:gap-16">
         <div>
@@ -244,9 +250,9 @@ export default function AtlasSite() {
           <div className="flex flex-col items-start gap-3 text-sm">
             {[
               { label: 'Observatory', href: '#observatory' },
-              { label: 'Platform', href: '#platform' },
-              { label: 'Solutions', href: '#solutions' },
-              { label: 'Commons', href: '#commons' },
+              { label: 'Platform', href: '/platform' },
+              { label: 'Solutions', href: '/solutions/water-climate-resilience' },
+              { label: 'Commons', href: '/community/open-source-projects' },
             ].map((item) => (
               <a key={item.label} href={item.href} className="transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
                 {item.label}
