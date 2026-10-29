@@ -102,6 +102,45 @@ function ObservatoryDemo() {
   const [location, setLocation] = useState<LocationName>('Turkana')
   const [selected, setSelected] = useState(0)
   const data = locations[location]
+  const selectedIntervention = data.interventions[selected]
+
+  function exportDecisionBrief() {
+    const report = [
+      '# Atlas Sanctum — Decision Brief (Prototype)',
+      '',
+      'STATUS: SIMULATED DEMONSTRATION — NOT VERIFIED FIELD EVIDENCE',
+      `Generated: ${new Date().toISOString()}`,
+      `Place: ${location}, ${data.country}`,
+      `Illustrative problem: ${data.problem}`,
+      '',
+      '## Illustrative evidence summary',
+      'This demonstration uses sample content to show the intended workflow. Source records, source dates, counts, costs, confidence levels, and impacts have not been verified for this location.',
+      `Displayed sample count: ${data.evidence}`,
+      `Displayed sample freshness: ${data.freshness}`,
+      `Displayed sample confidence: ${data.confidence}`,
+      '',
+      '## Selected illustrative intervention',
+      `Option: ${selectedIntervention.name}`,
+      `Displayed sample cost: ${selectedIntervention.cost}`,
+      `Displayed sample impact: ${selectedIntervention.impact}`,
+      `Displayed sample risk: ${selectedIntervention.risk}`,
+      '',
+      '## Before any real decision',
+      '- Replace sample values with dated, inspectable sources.',
+      '- Confirm the geography and problem with local stakeholders.',
+      '- Document cost assumptions, alternatives, uncertainty, and responsible decision owner.',
+      '- Agree measurable indicators, baseline, follow-up dates, and independent verification.',
+      '',
+      'Atlas Sanctum — technology in service of truth, stewardship, and human flourishing.',
+    ].join('\\n')
+    const blob = new Blob([report], { type: 'text/markdown;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `atlas-decision-brief-${location.toLowerCase()}-sample.md`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="overflow-hidden border border-[#b9b29f] bg-[#f7f3ea] shadow-[0_20px_60px_rgba(20,45,35,0.1)]">
@@ -116,6 +155,12 @@ function ObservatoryDemo() {
           <div className="relative z-10 flex h-full flex-col justify-between"><div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d8c28f]">01 / Observe</p><h3 className="mt-3 max-w-xs font-serif text-4xl font-light leading-[1.05]">Read the place<br />before the plan.</h3></div><div className="flex items-end justify-between gap-4"><div><p className="text-2xl font-light">{data.evidence}</p><p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#b9c0b5]">Evidence points</p></div><div className="text-right"><p className="text-sm">{data.freshness}</p><p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#b9c0b5]">Data freshness</p></div></div></div>
         </div>
         <div className="p-5 sm:p-8">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[#687168]">Sample decision workspace</p>
+            <button type="button" onClick={exportDecisionBrief} className="inline-flex items-center gap-2 border border-[#a07837] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#a07837] transition-colors hover:bg-[#efe8d8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a07837]">
+              Export sample brief <ArrowUpRight className="size-3" />
+            </button>
+          </div>
           <div className="flex flex-wrap gap-2 border-b border-[#d4cebd] pb-6"><label className="sr-only" htmlFor="location">Select location</label><div className="relative"><select id="location" value={location} onChange={(e) => { setLocation(e.target.value as LocationName); setSelected(0) }} className="appearance-none border border-[#b9b29f] bg-transparent py-2 pl-3 pr-9 text-sm text-[#17382d] outline-none"><option>Turkana</option><option>Kisumu</option><option>Mbarara</option></select><ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-3 -translate-y-1/2 text-[#a07837]" /></div><span className="py-2 text-xs text-[#687168]">{data.country} / {data.problem}</span></div>
           <div className="flex flex-col gap-6 pt-6"><div><p className="text-[10px] uppercase tracking-[0.18em] text-[#a07837]">Evidence brief</p><p className="mt-2 text-sm leading-relaxed text-[#455148]">Livelihoods are exposed to seasonal water stress. Existing boreholes are unevenly distributed and market access changes with rainfall.</p></div><div className="grid grid-cols-2 gap-3"><div className="border border-[#d4cebd] p-3"><p className="text-[10px] uppercase tracking-[0.12em] text-[#687168]">Confidence</p><p className="mt-2 text-sm text-[#17382d]">{data.confidence}</p></div><div className="border border-[#d4cebd] p-3"><p className="text-[10px] uppercase tracking-[0.12em] text-[#687168]">Sources</p><p className="mt-2 text-sm text-[#17382d]">NGOs + public</p></div></div><div><p className="mb-3 text-[10px] uppercase tracking-[0.18em] text-[#a07837]">02 / Recommend</p><div className="flex flex-col gap-2">{data.interventions.map((item, index) => <button key={item.name} onClick={() => setSelected(index)} className={`flex items-center justify-between border p-3 text-left transition-colors ${selected === index ? 'border-[#a07837] bg-[#efe8d8]' : 'border-[#d4cebd] hover:bg-[#f0ecdf]'}`}><span><span className="block text-sm text-[#17382d]">{item.name}</span><span className="mt-1 block text-[10px] uppercase tracking-[0.12em] text-[#687168]">{item.cost} / {item.impact} impact</span></span><ArrowUpRight className="size-4 text-[#a07837]" /></button>)}</div></div></div>
         </div>
