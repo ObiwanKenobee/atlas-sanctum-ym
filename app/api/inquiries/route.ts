@@ -10,19 +10,45 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => null)
-  const name = typeof body?.name === 'string' ? body.name.trim() : ''
-  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : ''
-  const organization = typeof body?.organization === 'string' ? body.organization.trim() : ''
-  const role = typeof body?.role === 'string' ? body.role.trim() : ''
-  const scope = typeof body?.scope === 'string' ? body.scope.trim() : ''
-  const message = typeof body?.message === 'string' ? body.message.trim() : ''
-
-  if (!name || !email || !organization || !scope || !/^\S+@\S+\.\S+$/.test(email)) {
-    return NextResponse.json({ error: 'Please provide a valid name, work email, organization, and pilot scope.' }, { status: 400 })
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
+  }
+  if (typeof body.website === 'string' && body.website.trim()) {
+    return NextResponse.json({ ok: true })
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey, { auth: { autoRefreshToken: false, persistSession: false } })
-  const { error } = await supabase.from('pilot_inquiries').insert({ name, email, organization, role: role || null, scope, message: message || null })
+  const textField = (value: unknown, max: number) =>
+    typeof value === 'string' ? value.trim().slice(0, max) : ''
+  const name = textField(body.name, 120)
+  const email = textField(body.email, 254).toLowerCase()
+  const organization = textField(body.organization, 180)
+  const role = textField(body.role, 120)
+  const sector = textField(body.sector, 120) || textField(body.scope, 120)
+  const location = textField(body.location, 180)
+  const problem = textField(body.problem, 4000) || textField(body.message, 4000)
+  const consent = body.consent === true || body.consent === 'true'
+
+  if (!name || !email || !organization || !sector || !location || problem.length < 20 ||
+      !/^\S+@\S+\.\S+$/.test(email) || !consent) {
+    return NextResponse.json({
+      error: 'Please provide your name, valid email, organization, sector, location, a problem of at least 20 characters, and consent.',
+    }, { status: 400 })
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+  const { error } = await supabase.from('pilot_inquiries').insert({
+    name,
+    email,
+    organization,
+    role: role || null,
+    scope: sector,
+    sector,
+    location,
+    message: problem,
+    consented_at: new Date().toISOString(),
+  })
 
   if (error) {
     return NextResponse.json({ error: 'Unable to save the inquiry right now.' }, { status: 500 })
