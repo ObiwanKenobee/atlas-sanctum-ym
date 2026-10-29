@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { ArrowUpRight, ChevronDown, CircleCheck, Menu, X } from 'lucide-react'
 import AtlasDonate from '@/components/atlas-donate'
 import AtlasFounder from '@/components/atlas-founder'
-import AtlasSiteLinks from '@/components/atlas-site-links'
 
 const locations = {
   Turkana: {
@@ -284,8 +283,6 @@ export default function AtlasSite() {
           </div>
         </div>
       </div>
-
-      <AtlasSiteLinks />
 
       <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-4 border-t border-[#315044] pt-5 text-[10px] leading-relaxed sm:flex-row sm:items-end sm:justify-between">
         <div>
