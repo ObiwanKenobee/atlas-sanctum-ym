@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: 'Atlas Sanctum', url: siteUrl, description: 'Open, evidence-led decision infrastructure for a more flourishing world.' }, { '@type': 'WebSite', name: 'Atlas Sanctum', url: siteUrl }] }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: 'Atlas Sanctum', alternateName: 'Atlas Sanctum Intelligence', url: siteUrl, logo: `${siteUrl}/icon.svg`, description: 'Open, evidence-led decision infrastructure for a more flourishing world.', sameAs: ['https://tech-craft-five.vercel.app', 'https://github.com/ObiwanKenobee'] }, { '@type': 'WebSite', name: 'Atlas Sanctum', url: siteUrl }] }) }} />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
