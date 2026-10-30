@@ -212,6 +212,7 @@ The objective is to demonstrate a working evidence-to-action cycle before expand
 - **Learning gate:** a decision cannot close until corrections are resolved and a lesson is recorded.
 - **Bounded agent assistance:** the Oracle scan is deterministic (no language model), requested by a person, attributed to both the agent and the requester, and changeable only by human review.
 - **Session authentication:** named accounts with roles replace the earlier placeholder identity header.
+- **Platform role coverage:** analyst, authorizer, implementer, verifier, and steward roles are enforced for onboarding and exposed through an owner/admin-only user directory; organization owners and admins can inspect membership, functional roles, portfolios, and join dates without exposing data to ordinary members.
 - **End-to-end demonstration:** the synthetic Nakuru water-point reliability decision exercises the full cycle; two additional synthetic decisions show earlier and blocked stages.
 
 ### Stack
