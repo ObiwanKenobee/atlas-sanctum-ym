@@ -248,6 +248,7 @@ export default function AtlasSite() {
             {[
               { label: 'Observatory', href: '#observatory' },
 { label: 'Platform', href: '/platform' },
+  { label: 'Overview', href: '/overview' },
   { label: 'Solutions', href: '/solutions' },
   { label: 'Administration', href: '/admin' },
               { label: 'Commons', href: '/community/open-source-projects' },
