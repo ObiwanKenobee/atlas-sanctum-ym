@@ -246,7 +246,7 @@ export default function AtlasSite() {
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d8c28f]">Explore</p>
           <div className="flex flex-col items-start gap-3 text-sm">
             {[
-              { label: 'Observatory', href: '#observatory' },
+              { label: 'Atlas method', href: '#observatory' },
 { label: 'Platform', href: '/platform' },
   { label: 'Overview', href: '/overview' },
   { label: 'Observatory', href: '/observatory' },
