@@ -1,0 +1,14 @@
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import { createClient } from '@/lib/supabase/server'
+
+export const metadata: Metadata = { title: 'Evidence Library | Atlas Sanctum', description: 'Searchable field records with source, place, date, and review context.' }
+
+export default async function EvidenceLibraryPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth')
+  const { data: records } = await supabase.from('field_records').select('id, title, region, category, observed_on, summary, source_name, created_at').eq('user_id', user.id).order('observed_on', { ascending: false })
+  return <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]"><header className="border-b border-[#d4cebd]"><div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8"><Link href="/workspace" className="text-xs text-[#687168] hover:text-[#17382d]">← Workspace</Link><Link href="/records?new=1" className="bg-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] text-[#f7f0df]">Add field record</Link></div></header><div className="mx-auto max-w-6xl px-5 py-14 sm:px-8"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#a07837]">Evidence / Library</p><h1 className="mt-5 max-w-4xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.04em] sm:text-8xl">What the workspace <em className="text-[#a07837]">knows.</em></h1><p className="mt-7 max-w-2xl text-lg leading-relaxed text-[#687168]">A durable, private collection of field records. Each entry keeps its place, category, date, summary, and source together so interpretation can be revisited.</p><div className="mt-14 flex items-center justify-between border-b border-[#c9c2b1] pb-4"><h2 className="font-serif text-3xl font-light">Field records</h2><span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#687168]">{records?.length ?? 0} records</span></div>{records?.length ? <div className="divide-y divide-[#d4cebd]">{records.map((record) => <article key={record.id} className="grid gap-5 py-7 md:grid-cols-[1fr_auto] md:items-start"><div><div className="flex flex-wrap gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#a07837]"><span>{record.category}</span><span>·</span><span>{record.region}</span><span>·</span><time dateTime={record.observed_on}>{record.observed_on}</time></div><h3 className="mt-3 font-serif text-3xl font-light">{record.title}</h3><p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#687168]">{record.summary}</p></div><p className="text-xs text-[#687168]">Source: {record.source_name ?? 'Not specified'}</p></article>)}</div> : <div className="border-b border-[#d4cebd] py-12 text-sm text-[#687168]">No field records yet. Start with one observation while the context is still close.</div>}</div></main>
+}
