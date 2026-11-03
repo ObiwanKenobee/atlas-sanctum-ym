@@ -174,8 +174,8 @@ function ObservatoryDemo() {
 const githubUrl = 'https://github.com/ObiwanKenobee/atlas-sanctum-ym'
 const navigation = [
   { label: 'Observatory', href: '#observatory' },
-  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence'], ['Ethical Finance', '/finance'], ['Humanitarian Network', '/humanitarian'], ['Regenerative Economy', '/regenerative'], ['Development Observatory', '/development'], ['Execution & Verification', '/execution'], ['Governance & Privacy', '/governance'], ['Blog', '/blog']] },
-  { label: 'Solutions', items: [['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
+  { label: 'Platform', items: [['Regenerative Decision Engine', '/platform'], ['How It Works', '/how-it-works'], ['Evidence & Decision Records', '/evidence'], ['Decision Workspace', '/decisions'], ['Evidence Library', '/evidence/library'], ['Ethical Finance', '/finance'], ['Humanitarian Network', '/humanitarian'], ['Regenerative Economy', '/regenerative'], ['Development Observatory', '/development'], ['Execution & Verification', '/execution'], ['Governance & Privacy', '/governance'], ['Research Lab', '/research/lab'], ['Blog', '/blog']] },
+  { label: 'Solutions', items: [['All sectors', '/solutions'], ['Water & Climate Resilience', '/solutions/water-climate-resilience'], ['Agriculture & Food Systems', '/solutions/agriculture-food-systems'], ['Programme & Grant Accountability', '/solutions/programme-grant-accountability']] },
   { label: 'Commons', items: [['Open-source Projects', '/community/open-source-projects'], ['Contribute on GitHub', '/community/contribute'], ['Principles & Governance', '/community/principles-governance']] },
 { label: 'Research', items: [['Research & Insights', '/research'], ['Methods & Data Sources', '/research/methods'], ['Field Notes & Case Studies', '/research/field-notes']] },
  { label: 'Partnerships', items: [['Work with Atlas', '/work-with-atlas'], ['Pilot Opportunities', '/research/pilots'], ['Research & Implementation', '/research/implementation'], ['Open-source Collaboration', '/research/collaboration']] },
@@ -246,9 +246,16 @@ export default function AtlasSite() {
           <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#d8c28f]">Explore</p>
           <div className="flex flex-col items-start gap-3 text-sm">
             {[
-              { label: 'Observatory', href: '#observatory' },
-              { label: 'Platform', href: '/platform' },
-              { label: 'Solutions', href: '/solutions/water-climate-resilience' },
+              { label: 'Atlas method', href: '#observatory' },
+{ label: 'Platform', href: '/platform' },
+  { label: 'Overview', href: '/overview' },
+  { label: 'Observatory', href: '/observatory' },
+  { label: 'Projects', href: '/projects' },
+  { label: 'Coordination', href: '/coordination' },
+  { label: 'Implementation', href: '/implementation' },
+  { label: 'Verification', href: '/verification' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'Administration', href: '/admin' },
               { label: 'Commons', href: '/community/open-source-projects' },
             ].map((item) => (
               <a key={item.label} href={item.href} className="transition-colors hover:text-[#f7f0df] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d8c28f]">
