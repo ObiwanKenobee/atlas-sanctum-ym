@@ -284,3 +284,18 @@ https://atlassanctum.me
 | Atlas engineering | Inspect Supabase schema and fix verification/tenant gaps | Reviewed migration plan and passing security tests |
 
 **Current status:** No institutional owner, data-sharing agreement, pilot approval or field validation is in place. The next measurable achievement is a discovery conversation with an accountable water-service operator.
+
+
+## 14. Local discovery refinement — Rongai / Mosop
+
+The operator's published coverage page lists Rongai among its Western operating areas. The user's broad location context is Mosop, Nakuru County; this makes a Rongai-area discovery conversation geographically relevant, but it does **not** establish that any particular water point, community or household is within NARUWASCO's licensed service boundary. Confirm the exact scheme, operator and service-point ownership with NARUWASCO before choosing a pilot site. See the operator's [coverage and maps](https://www.naruwasco.co.ke/home/) and [contact page](https://www.naruwasco.co.ke/contact-us/).
+
+**Recommended first question:** Does the Western Area team have one service scheme in or near Rongai with a recurring, documented interruption/maintenance workflow that could be reviewed using existing non-personal records?
+
+**Published NARUWASCO contact details (verify before sending):**
+- Email: info@naruwasco.co.ke
+- Customer care: +254 774 389 372 / +254 791 389 372
+- Headquarters: Stanley Mathenge Road, Industrial Area, Nakuru
+- [Official contact page](https://www.naruwasco.co.ke/contact-us/)
+
+The first contact should request routing to the operational owner. Customer-care channels are published for customer complaints and should not be treated as a confirmed partnership or procurement contact.
