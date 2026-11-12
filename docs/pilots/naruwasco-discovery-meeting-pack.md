@@ -121,6 +121,8 @@ Demonstrate:
 5. A decision note with options, rationale and limitations.
 6. A recorded restoration observation that remains **pending verification** until a separate authorized reviewer completes review.
 
+The current water module does not support this verification workflow. Use a mockup labelled as a proposed workflow, or a prototype that supports separate verification.
+
 Never show invented operator names, service statistics, partner logos or claims of measured improvement. Never use another water provider's confidential operational data.
 
 The current water module is a prototype; do not present it as an operational deployment or as capable of multi-institution access until the security model has been implemented and tested.
@@ -210,7 +212,7 @@ Suggested interpretation:
 - **10–15:** conduct targeted follow-up; do not promise a pilot yet.
 - **0–9:** nurture or stop; the problem, owner or evidence is not sufficiently qualified.
 
-Regardless of score, do not proceed without a named operational sponsor, clear record authority, a genuine use case and an approved data-sharing route.
+Regardless of score, do not start a pilot without a named operational sponsor and process owner, clear record authority, a genuine use case and an approved data-sharing route. Discovery may continue while the process owner is being identified.
 
 ## 10. Next-step decision record
 
