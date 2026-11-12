@@ -601,6 +601,63 @@ begin
 end;
 $test$;
 
+-- The original analyst cannot append alternatives or citations to the
+-- already-authorized version. The row-locking triggers and RLS both enforce this.
+reset role;
+set local role authenticated;
+select set_config(
+  'request.jwt.claim.sub',
+  'e5000000-0000-4000-8000-000000000005',
+  true
+);
+
+do $test$
+declare
+  ids atlas_decision_test_ids%rowtype;
+  option_locked boolean := false;
+  citation_locked boolean := false;
+begin
+  select * into strict ids from atlas_decision_test_ids;
+
+  begin
+    insert into public.decision_options (
+      decision_version_id, decision_id, organization_id, project_id,
+      option_name, description, expected_benefit, material_risks,
+      is_recommended, created_by
+    )
+    values (
+      ids.decision_version_a, ids.decision_id, ids.organization_a, ids.project_a,
+      'Late option after approval',
+      'A proposal alternative cannot be appended after review.',
+      'No benefit to the approved packet.',
+      'Would mutate an already-reviewed decision version.',
+      false, ids.user_a
+    );
+  exception
+    when insufficient_privilege then option_locked := true;
+  end;
+
+  begin
+    insert into public.decision_evidence_links (
+      decision_version_id, decision_id, organization_id, project_id,
+      evidence_version_id, evidence_item_id, relevance_note, linked_by
+    )
+    values (
+      ids.decision_version_a, ids.decision_id, ids.organization_a, ids.project_a,
+      ids.evidence_version_a, ids.evidence_item_a,
+      'A late citation cannot be appended after review.',
+      ids.user_a
+    );
+  exception
+    when insufficient_privilege then citation_locked := true;
+  end;
+
+  if not option_locked or not citation_locked then
+    raise exception 'FAIL: author appended support material after decision approval';
+  end if;
+end;
+$test$;
+
 -- The author appends version two after the prior version is approved. The
 -- previous approval remains tied to version one and does not transfer forward.
 reset role;
