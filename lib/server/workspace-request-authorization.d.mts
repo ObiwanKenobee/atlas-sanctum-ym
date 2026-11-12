@@ -35,6 +35,8 @@ export type WorkspaceAuthorizationResolver = {
   /** Required for evidence.review, decision.approve, action.*, and outcome.* actions. */
   findResourceScope?: (target: {
     userId: string
+    organizationId: string
+    projectId: string
     action: string
     resourceId: string
   }) => Promise<TrustedWorkspaceResourceScope | null>
