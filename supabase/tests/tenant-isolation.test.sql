@@ -75,24 +75,26 @@ values (
   'I contribute evidence and recommendations'
 );
 
-insert into atlas_tenant_test_ids (user_a, user_b, organization_a)
-select ids.user_a, ids.user_b, created.organization_id
-from atlas_tenant_test_ids ids
-cross join lateral public.create_workspace_organization(
-  'Atlas Synthetic Institution A',
-  'atlas-synthetic-tenant-a-v028'
-) created;
+update atlas_tenant_test_ids
+set organization_a = (
+  select organization_id
+  from public.create_workspace_organization(
+    'Atlas Synthetic Institution A',
+    'atlas-synthetic-tenant-a-v028'
+  )
+);
 
-insert into atlas_tenant_test_ids (user_a, user_b, organization_a, project_a)
-select ids.user_a, ids.user_b, ids.organization_a, created.project_id
-from atlas_tenant_test_ids ids
-cross join lateral public.create_workspace_project(
-  ids.organization_a,
-  'Synthetic Tenant A Project',
-  'synthetic-tenant-a-project',
-  'Synthetic project used to validate institution-level isolation.',
-  'water_climate'
-) created;
+update atlas_tenant_test_ids ids
+set project_a = (
+  select project_id
+  from public.create_workspace_project(
+    ids.organization_a,
+    'Synthetic Tenant A Project',
+    'synthetic-tenant-a-project',
+    'Synthetic project used to validate institution-level isolation.',
+    'water_climate'
+  )
+);
 
 reset role;
 
@@ -112,24 +114,26 @@ values (
   'I contribute evidence and recommendations'
 );
 
-insert into atlas_tenant_test_ids (user_a, user_b, organization_b)
-select ids.user_a, ids.user_b, created.organization_id
-from atlas_tenant_test_ids ids
-cross join lateral public.create_workspace_organization(
-  'Atlas Synthetic Institution B',
-  'atlas-synthetic-tenant-b-v028'
-) created;
+update atlas_tenant_test_ids
+set organization_b = (
+  select organization_id
+  from public.create_workspace_organization(
+    'Atlas Synthetic Institution B',
+    'atlas-synthetic-tenant-b-v028'
+  )
+);
 
-insert into atlas_tenant_test_ids (user_a, user_b, organization_b, project_b)
-select ids.user_a, ids.user_b, ids.organization_b, created.project_id
-from atlas_tenant_test_ids ids
-cross join lateral public.create_workspace_project(
-  ids.organization_b,
-  'Synthetic Tenant B Project',
-  'synthetic-tenant-b-project',
-  'Synthetic project used to validate institution-level isolation.',
-  'agriculture_food'
-) created;
+update atlas_tenant_test_ids ids
+set project_b = (
+  select project_id
+  from public.create_workspace_project(
+    ids.organization_b,
+    'Synthetic Tenant B Project',
+    'synthetic-tenant-b-project',
+    'Synthetic project used to validate institution-level isolation.',
+    'agriculture_food'
+  )
+);
 
 -- Assert that the project bootstrap trigger created the correct active manager
 -- membership, and that each tenant has two audit events for the project/member.
@@ -233,8 +237,7 @@ declare
 begin
   select * into strict ids from atlas_tenant_test_ids;
   begin
-    perform *
-    from public.create_workspace_project(
+    perform public.create_workspace_project(
       ids.organization_b,
       'Cross Tenant Attempt A',
       'cross-tenant-attempt-a',
