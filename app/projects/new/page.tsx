@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getWorkspaceOrganizations } from '@/lib/organizations'
 import ProjectCreationForm from '@/components/project-creation-form'
+import { isWorkspaceFunctionalRole } from '@/lib/workspace-roles.mjs'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
@@ -20,7 +21,17 @@ export default async function NewProjectPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth')
 
-  const organizations = await getWorkspaceOrganizations()
+  const [organizations, profileResult] = await Promise.all([
+    getWorkspaceOrganizations(),
+    supabase
+      .from('workspace_profiles')
+      .select('role')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+  ])
+  if (profileResult.error) throw new Error('Unable to load workspace profile')
+
+  const profileReady = isWorkspaceFunctionalRole(profileResult.data?.role)
   const manageableOrganizations = organizations.filter((organization) =>
     organization.role === 'owner' || organization.role === 'admin'
   )
@@ -41,7 +52,13 @@ export default async function NewProjectPage({
         <h1 className="mt-5 max-w-3xl font-serif text-5xl font-light leading-[0.98] tracking-[-0.04em] sm:text-7xl">Give the work a <em className="text-[#a07837]">shared structure.</em></h1>
         <p className="mt-6 max-w-2xl text-sm leading-relaxed text-[#687168]">A project defines its purpose and operating domain. Atlas will create your active manager membership together with the project and its audit record.</p>
         <div className="mt-10 max-w-2xl">
-          {selected ? (
+          {!profileReady ? (
+            <div className="border border-dashed border-[#b9b29f] bg-[#f2ede2] p-7 sm:p-9">
+              <h2 className="font-serif text-3xl font-light">Complete your workspace profile first.</h2>
+              <p className="mt-4 text-sm leading-relaxed text-[#687168]">The project creator’s functional role is read from the authenticated user’s persisted workspace profile. Atlas will not accept a role submitted by this form.</p>
+              <Link href="/onboarding" className="mt-7 inline-flex bg-[#17382d] px-5 py-3 text-[10px] uppercase tracking-[0.14em] text-[#f7f0df]">Complete workspace setup</Link>
+            </div>
+          ) : selected ? (
             <ProjectCreationForm
               organizations={manageableOrganizations.map(({ id, name, slug }) => ({ id, name, slug }))}
               initialOrganizationId={selected.id}
