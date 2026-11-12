@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   typecheck:
-    name: TypeScript typecheck
+    name: TypeScript typecheck and unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -38,3 +38,6 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
