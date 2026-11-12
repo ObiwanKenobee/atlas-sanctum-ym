@@ -317,8 +317,8 @@ begin
       organization_id, project_id, user_id, access_level, functional_role, status
     )
     values (
-      ids.organization_b, ids.project_a, ids.user_a,
-      'viewer', 'analyst', 'active'
+      ids.organization_b, ids.project_a, ids.user_b,
+      'viewer', 'implementer', 'active'
     );
   exception
     when foreign_key_violation then denied := true;
