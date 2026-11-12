@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
       if (error) throw error
       const record = Array.isArray(data) ? data[0] : null
-      if (!record) return { project: null, membership: null }
+      if (!record) throw new Error('project_creation_unconfirmed')
 
       return {
         project: {
