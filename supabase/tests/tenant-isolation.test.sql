@@ -135,25 +135,12 @@ set project_b = (
   )
 );
 
--- Assert that the project bootstrap trigger created the correct active manager
--- membership, and that each tenant has two audit events for the project/member.
+-- As Institution B, verify only B's bootstrap and audit records here.
 do $test$
 declare
   ids atlas_tenant_test_ids%rowtype;
 begin
   select * into strict ids from atlas_tenant_test_ids;
-
-  if not exists (
-    select 1 from public.project_memberships
-    where organization_id = ids.organization_a
-      and project_id = ids.project_a
-      and user_id = ids.user_a
-      and access_level = 'manager'
-      and functional_role = 'analyst'
-      and status = 'active'
-  ) then
-    raise exception 'FAIL: tenant A creator manager membership was not bootstrapped';
-  end if;
 
   if not exists (
     select 1 from public.project_memberships
@@ -165,10 +152,6 @@ begin
       and status = 'active'
   ) then
     raise exception 'FAIL: tenant B creator manager membership was not bootstrapped';
-  end if;
-
-  if (select count(*) from public.audit_events where project_id = ids.project_a) <> 2 then
-    raise exception 'FAIL: tenant A expected project/member audit events';
   end if;
 
   if (select count(*) from public.audit_events where project_id = ids.project_b) <> 2 then
@@ -199,6 +182,20 @@ begin
   end if;
   if (select count(*) from public.projects) <> 1 then
     raise exception 'FAIL: tenant A must see exactly one project';
+  end if;
+  if not exists (
+    select 1 from public.project_memberships
+    where organization_id = ids.organization_a
+      and project_id = ids.project_a
+      and user_id = ids.user_a
+      and access_level = 'manager'
+      and functional_role = 'analyst'
+      and status = 'active'
+  ) then
+    raise exception 'FAIL: tenant A creator manager membership was not bootstrapped';
+  end if;
+  if (select count(*) from public.audit_events where project_id = ids.project_a) <> 2 then
+    raise exception 'FAIL: tenant A expected project/member audit events';
   end if;
   if exists (select 1 from public.projects where id = ids.project_b) then
     raise exception 'FAIL: tenant A can read tenant B project by UUID';
