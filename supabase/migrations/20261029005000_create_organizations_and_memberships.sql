@@ -192,7 +192,7 @@ returns table (
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $function$
 declare
   v_user_id uuid;
   v_organization_id uuid;
@@ -236,7 +236,7 @@ begin
   where o.id = v_organization_id
     and m.user_id = v_user_id;
 end;
-$$;
+$function$;
 
 revoke all on function public.create_workspace_organization(text, text) from public, anon;
 grant execute on function public.create_workspace_organization(text, text) to authenticated;
