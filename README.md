@@ -11,7 +11,7 @@ Our founding conviction is simple:
 
 > Intelligence becomes valuable when it helps people act wisely and serve faithfully.
 
-> **Current codebase:** a Next.js application with Supabase-backed authentication, user-scoped field records, water-pilot foundations, and institutional workspace interfaces. Organization/project tenant isolation and a complete database-backed project lifecycle are not yet verified or delivered. See [Current Repository Implementation](#current-repository-implementation).
+> **Current codebase:** a Next.js application with Supabase-backed authentication, user-owned field and water-pilot records, and an organization/project-scoped institutional data model. The checked-in database migrations establish tenant boundaries, project places, versioned evidence, and versioned decisions with independent authorization. The project register interface is read-only; project creation, proposal submission, action execution, and verified-outcome workflows are still in progress. See [Current Repository Implementation](#current-repository-implementation).
 
 ---
 
@@ -219,25 +219,28 @@ The package manifest and lockfile are the source of truth for dependency install
 ### What is present in the source tree
 
 - Public institutional, research, solutions, governance, and pilot pages.
-- Auth, onboarding, overview, workspace, projects, records, execution, coordination, and verification interfaces.
-- Supabase server/client setup using the authenticated session.
-- API routes for onboarding, field records, water-pilot operations, inquiries, newsletters, and donation checkout.
-- Checked-in migrations for pilot inquiries, workspace profiles, field records, water-pilot records, newsletter subscriptions, and workspace role constraints.
-- User-scoped RLS policies in the workspace-profile and field-record migrations; water-pilot tables also have user-owner policies.
+- Auth, onboarding, overview, workspace, project, record, execution, coordination, and verification interfaces.
+- Supabase server/client setup using authenticated request cookies and server-side user verification.
+- API routes for onboarding, personal field records, water-pilot operations, inquiries, newsletters, and donation checkout.
+- Database migrations for organizations, organization memberships, projects, project memberships, project places, evidence items and immutable evidence versions, decisions, immutable decision versions, alternatives, exact evidence citations, append-only approvals, and audit events.
+- RLS policies and tenant-consistent composite foreign keys for the organization/project-scoped records; authenticated clients have explicit read/insert grants, while decision history and approval records have no direct update/delete grants.
+- A project list and read-only decision register that query through the authenticated Supabase server client and rely on database RLS for visibility.
+- SQL authorization suites for tenant isolation, evidence registry, and decision register, plus Node unit tests for workspace and project-input rules.
 - A read-only SQL reconnaissance script for inspecting the intended Supabase database without changing it.
 
-These are application and schema foundations, not proof that every connected feature is operating against a live, production database.
+The presence of schema and application interfaces does not establish that a live institution is using Atlas or that an operational outcome has been achieved.
 
-### Current workspace and tenant limitations
+### Current workspace and tenant status — 12 November 2026
 
-- The projects page currently presents the project lifecycle and workspace organization context; it is not yet a complete database-backed project CRUD interface.
-- The application helper references `organizations` and `organization_memberships`, but the checked-in migrations inspected for this milestone do not create those tables. Their live definitions and applied migration history remain unverified.
-- The current migrations primarily establish user-owned records. Organization/project-level tenant isolation is **not demonstrated** by the checked-in schema.
-- The project creation service, functional-role policy, and server-side authorization adapters are being reviewed in [PR #17](https://github.com/ObiwanKenobee/atlas-sanctum-ym/pull/17). They are not yet connected to a verified project/membership database schema or an exposed project API route.
-- No confirmed institutional deployment, real beneficiary evidence, field-verified outcomes, or measured impact should be inferred from demonstration content.
-- GitHub Actions currently reports failures before recording workflow steps. Typecheck, test, and production-build status therefore remain unverified in CI.
+- The connected development database is active and its live schema has been inspected. It contains the organization, membership, project, place, evidence, and decision tables described above, with RLS enabled on the relevant public tables.
+- The development database currently has no organization, project, evidence, or decision records. No institutional project owner, external partner, real field dataset, or pilot approval is confirmed.
+- The project list displays only projects for which the authenticated user has an active persisted project membership. The project decision register and record detail pages are read-only in this increment; they display immutable proposal versions, alternatives, exact evidence-version citations, and the authorization outcome bound to each version.
+- Project creation, collaborator invitations, decision drafting/submission, and action/outcome workflows are not yet exposed as a complete end-to-end application workflow.
+- Existing user-owned `field_records` and water-pilot records remain separate from institutional project evidence. They are not automatically reassigned or imported into an organization.
+- Do not infer a real project, partner relationship, service improvement, beneficiary result, or measured impact from synthetic SQL fixtures or demonstration content.
+- GitHub Actions run [#42](https://github.com/ObiwanKenobee/atlas-sanctum-ym/actions/runs/43249815173) on the current main commit failed in the TypeScript typecheck/unit-test job. The connected GitHub interface does not expose the job steps or log blob (404); the failing step and root cause are unknown. CI health therefore remains unverified.
 
-Do not treat application-level authorization helpers as a replacement for PostgreSQL constraints and Supabase RLS.
+The institutional access model is enforced by PostgreSQL RLS and constraints, not by hiding interface controls. A successful UI query is not a substitute for database authorization tests.
 
 ### Run the web application locally
 
@@ -268,19 +271,23 @@ The Supabase server client reads:
 
 Set the values for a development Supabase project in an untracked local environment file. Configure additional integration credentials only when testing the corresponding feature. Never commit secret keys, service-role credentials, production tokens, or real user data.
 
-The Supabase project currently visible through the connected tooling is marked inactive and has not been confirmed as the intended Atlas Sanctum development environment. Confirm the target project and inspect its live tables, policies, grants, functions, triggers, and migration history before applying schema changes.
+The connected Atlas Sanctum development project is active and has been inspected. Treat it as a development environment only: review the actual migration history, policies, grants, functions, triggers, and data classification before changing any other Supabase project. Never copy production credentials or real user data into local development.
 
 ### Testing and delivery status
 
-Node's built-in test files are present for workspace role validation, authorization policy, request authorization, project input validation, and project creation. Their presence is not evidence that the full application typecheck/build or all tests have passed in CI.
+Node unit tests cover workspace roles, authorization policy, request authorization, project input validation, project creation, and the decision-register view model. The database suites `supabase/tests/tenant-isolation.test.sql`, `supabase/tests/evidence-registry.test.sql`, and `supabase/tests/decision-register.test.sql` have been executed against the dedicated development database using synthetic fixtures and transaction rollback.
 
-The current engineering gates are:
+These database checks are development validation, not evidence of a production deployment. The current GitHub Actions run fails in its TypeScript typecheck/unit-test job, but the available job endpoint exposes neither steps nor logs. The failure cause is unknown; do not report a passing CI baseline until an actionable run completes successfully.
 
-1. Restore actionable GitHub Actions execution and obtain real step logs.
-2. Confirm the intended active development Supabase project.
-3. Reconcile live schema with checked-in migrations.
-4. Implement organization/project schema and RLS only after that reconciliation.
-5. Demonstrate two synthetic organizations with database-level cross-tenant denial tests.
+The next engineering gates are:
+
+1. Diagnose the GitHub Actions failure using accessible step logs or a reproducible local run.
+2. Deliver a project creation and scoped collaborator invitation workflow using the existing atomic database controls.
+3. Add a safe, server-authorized decision submission path that preserves version immutability and independent approval.
+4. Connect approved decisions to assigned actions and independently verified outcomes.
+5. Validate one complete operational workflow with a named institutional owner and authorized real-world data.
+
+No production schema migration, real partner validation, or measured pilot outcome is claimed.
 
 ## Roadmap
 
