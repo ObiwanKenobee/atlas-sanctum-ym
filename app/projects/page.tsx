@@ -57,8 +57,8 @@ export default async function ProjectsPage() {
     projects = data ?? []
   }
 
-  const membershipByProject = new Map(memberships.map((membership) => [membership.project_id, membership]))
-  const organizationById = new Map(organizations.map((organization) => [organization.id, organization]))
+  const membershipByProject = new Map(memberships.map((membership) => [membership.project_id, membership] as const))
+  const organizationById = new Map(organizations.map((organization) => [organization.id, organization] as const))
 
   return (
     <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]">

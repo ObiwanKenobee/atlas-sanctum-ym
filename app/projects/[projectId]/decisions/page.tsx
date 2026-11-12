@@ -93,7 +93,7 @@ export default async function ProjectDecisionsPage({
     versions = versionResult.data ?? []
     approvals = approvalResult.data ?? []
 
-    const placeIds = [...new Set(decisionRows.map((decision) => decision.place_id).filter(Boolean))]
+    const placeIds = [...new Set(decisionRows.map((decision) => decision.place_id).filter((placeId): placeId is string => typeof placeId === 'string'))]
     if (placeIds.length) {
       const { data, error } = await supabase
         .from('project_places')
@@ -105,7 +105,7 @@ export default async function ProjectDecisionsPage({
     }
   }
 
-  const placeById = new Map(places.map((place) => [place.id, place]))
+  const placeById = new Map(places.map((place) => [place.id, place] as const))
   const register = buildDecisionRegisterRows(decisionRows, versions, approvals)
 
   return (

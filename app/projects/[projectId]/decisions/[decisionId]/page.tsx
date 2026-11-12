@@ -119,7 +119,7 @@ export default async function DecisionRecordPage({
     place = data
   }
 
-  const evidenceByVersion = new Map(evidenceVersions.map((evidence) => [evidence.id, evidence]))
+  const evidenceByVersion = new Map(evidenceVersions.map((evidence) => [evidence.id, evidence] as const))
 
   return (
     <main className="min-h-screen bg-[#f7f3ea] text-[#17382d]">
