@@ -57,6 +57,9 @@ export default async function ProjectsPage() {
     projects = data ?? []
   }
 
+  const manageableOrganizations = organizations.filter((organization) =>
+    organization.role === 'owner' || organization.role === 'admin'
+  )
   const membershipByProject = new Map(memberships.map((membership) => [membership.project_id, membership] as const))
   const organizationById = new Map(organizations.map((organization) => [organization.id, organization] as const))
 
@@ -76,8 +79,12 @@ export default async function ProjectsPage() {
             <h1 className="mt-5 max-w-4xl font-serif text-6xl font-light leading-[0.95] tracking-[-0.04em] sm:text-8xl">Work with <em className="text-[#a07837]">accountability.</em></h1>
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#687168]">Projects hold the shared context for places, evidence, decisions, responsibility, and verified outcomes. Only projects where your membership is active appear here.</p>
           </div>
-          <Link href="/workspace" className="inline-flex shrink-0 items-center justify-center border border-[#17382d] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Open observatory</Link>
+          <div className="flex flex-wrap items-center gap-3">
+            {manageableOrganizations.length > 0 && <Link href="/projects/new" className="inline-flex shrink-0 items-center justify-center bg-[#17382d] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#f7f3ea] hover:bg-[#285344]">Create project</Link>}
+            <Link href="/workspace" className="inline-flex shrink-0 items-center justify-center border border-[#17382d] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Open observatory</Link>
+          </div>
         </div>
+        
 
         <section aria-labelledby="project-list" className="mt-14">
           <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#c9c2b1] pb-4">
@@ -107,7 +114,7 @@ export default async function ProjectsPage() {
                     </div>
                     <div className="mt-7 flex flex-wrap gap-3">
                       <Link href={`/projects/${project.id}/decisions`} className="inline-flex items-center bg-[#17382d] px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#f7f0df] hover:bg-[#285344]">Open decision register</Link>
-                      <Link href={`/projects/${project.id}/decisions`} className="inline-flex items-center border border-[#c9c2b1] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:border-[#a07837]">View project record</Link>
+                      <Link href={`/projects/${project.id}/team`} className="inline-flex items-center border border-[#c9c2b1] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:border-[#a07837]">Project team</Link>
                     </div>
                   </article>
                 )
@@ -122,8 +129,12 @@ export default async function ProjectsPage() {
                   ? 'Your account belongs to an organization, but it has no active project membership yet. An organization administrator must establish the project and grant your role before project records appear.'
                   : 'This account has no organization membership yet. An organization must be established and a project membership assigned before institutional records can be displayed.'}
               </p>
-              <p className="mt-5 max-w-2xl text-xs leading-relaxed text-[#687168]">Project creation and invitation controls are not exposed in this interface yet. No sample or simulated records are shown as live institutional work.</p>
-              <Link href="/workspace" className="mt-7 inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Return to observatory</Link>
+              <p className="mt-5 max-w-2xl text-xs leading-relaxed text-[#687168]">Owners and admins can establish a project. A new organization begins with its creator as owner; project creation then bootstraps that owner’s active project manager membership.</p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                {manageableOrganizations.length > 0 && <Link href="/projects/new" className="inline-flex bg-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] text-[#f7f3ea]">Create project</Link>}
+                <Link href="/organizations/new" className="inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Create organization</Link>
+                <Link href="/workspace" className="inline-flex border border-[#c9c2b1] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:border-[#a07837]">Return to observatory</Link>
+              </div>
             </div>
           )}
         </section>

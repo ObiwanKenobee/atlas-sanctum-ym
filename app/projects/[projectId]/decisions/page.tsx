@@ -120,6 +120,9 @@ export default async function ProjectDecisionsPage({
         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#a07837]">Project / Decision register</p>
         <h1 className="mt-5 max-w-4xl font-serif text-5xl font-light leading-[0.98] tracking-[-0.04em] sm:text-7xl">{project.name}</h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#687168]">{project.purpose}</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href={`/projects/${project.id}/team`} className="inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Manage project team</Link>
+        </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-y border-[#c9c2b1] py-4">
           <div>
             <h2 className="font-serif text-2xl font-light">Decisions</h2>
