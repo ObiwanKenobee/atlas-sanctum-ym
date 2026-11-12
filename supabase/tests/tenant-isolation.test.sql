@@ -226,13 +226,18 @@ begin
 end;
 $test$;
 
--- Institution A cannot create a project in Institution B.
+-- Institution A cannot create a project or membership in Institution B,
+-- either through the guarded RPC or by calling table INSERT directly.
 do $test$
 declare
   ids atlas_tenant_test_ids%rowtype;
-  denied boolean := false;
+  rpc_denied boolean := false;
+  project_insert_denied boolean := false;
+  project_membership_insert_denied boolean := false;
+  organization_membership_insert_denied boolean := false;
 begin
   select * into strict ids from atlas_tenant_test_ids;
+
   begin
     perform public.create_workspace_project(
       ids.organization_b,
@@ -242,10 +247,56 @@ begin
       'water_climate'
     );
   exception
-    when insufficient_privilege then denied := true;
+    when insufficient_privilege then rpc_denied := true;
   end;
-  if not denied then
-    raise exception 'FAIL: tenant A created project in tenant B';
+  if not rpc_denied then
+    raise exception 'FAIL: tenant A created project in tenant B through the RPC';
+  end if;
+
+  begin
+    insert into public.projects (
+      organization_id, name, slug, purpose, domain, created_by
+    )
+    values (
+      ids.organization_b,
+      'Direct Cross Tenant Attempt A',
+      'direct-cross-tenant-attempt-a',
+      'This direct insert must be rejected by the projects RLS policy.',
+      'water_climate',
+      ids.user_a
+    );
+  exception
+    when insufficient_privilege then project_insert_denied := true;
+  end;
+  if not project_insert_denied then
+    raise exception 'FAIL: tenant A inserted a project directly into tenant B';
+  end if;
+
+  begin
+    insert into public.project_memberships (
+      organization_id, project_id, user_id, access_level, functional_role, status
+    )
+    values (
+      ids.organization_b, ids.project_b, ids.user_b,
+      'viewer', 'implementer', 'active'
+    );
+  exception
+    when insufficient_privilege then project_membership_insert_denied := true;
+  end;
+  if not project_membership_insert_denied then
+    raise exception 'FAIL: tenant A inserted a member into tenant B project';
+  end if;
+
+  begin
+    insert into public.organization_memberships (
+      organization_id, user_id, role, status
+    )
+    values (ids.organization_b, ids.user_a, 'member', 'active');
+  exception
+    when insufficient_privilege then organization_membership_insert_denied := true;
+  end;
+  if not organization_membership_insert_denied then
+    raise exception 'FAIL: tenant A inserted an organization membership into tenant B';
   end if;
 end;
 $test$;
