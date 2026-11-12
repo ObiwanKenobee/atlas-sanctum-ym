@@ -29,7 +29,10 @@ export type WorkspaceAuthorizationContext = {
     functionalRole: WorkspaceFunctionalRole
   }
   resource?: {
+    organizationId?: string
+    projectId?: string
     proposedBy?: string
+    decisionStatus?: 'draft' | 'submitted' | 'approved' | 'rejected' | 'superseded'
     submittedBy?: string
     verificationStatus?: 'pending' | 'verified' | 'rejected'
   }
@@ -40,8 +43,9 @@ export type WorkspaceAuthorizationResult =
   | { allowed: false; reason: string }
 
 /**
- * Evaluates application-level policy only. Call after deriving actor and
- * membership from trusted server-side sources; database RLS remains required.
+ * Evaluates application-level policy only. Derive actor, membership and
+ * target resource scope from trusted server-side sources; database RLS remains
+ * required.
  */
 export declare function authorizeWorkspaceAction(
   context: WorkspaceAuthorizationContext,
