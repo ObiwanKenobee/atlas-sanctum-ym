@@ -29,7 +29,7 @@ values (
   'b2000000-0000-4000-8000-000000000002'
 );
 
-grant select, update on table atlas_tenant_test_ids to authenticated;
+grant select, insert, update on table atlas_tenant_test_ids to authenticated;
 
 -- Synthetic Auth records exist only for the lifetime of this transaction.
 insert into auth.users (
