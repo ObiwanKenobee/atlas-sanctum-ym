@@ -129,15 +129,6 @@ create policy organizations_select_active_members
   to authenticated
   using (private.is_active_org_member(id));
 
-create policy organizations_insert_self_as_creator
-  on public.organizations
-  for insert
-  to authenticated
-  with check (
-    created_by = (select auth.uid())
-    and status = 'active'
-  );
-
 create policy organization_memberships_select_self_or_admin
   on public.organization_memberships
   for select
@@ -182,7 +173,7 @@ create policy organization_memberships_update_non_owner_by_admin
 revoke all on table public.organizations from public, anon;
 revoke all on table public.organization_memberships from public, anon;
 grant usage on schema public to authenticated;
-grant select, insert on table public.organizations to authenticated;
+grant select on table public.organizations to authenticated;
 grant select, insert on table public.organization_memberships to authenticated;
 grant update (role, status) on table public.organization_memberships to authenticated;
 
@@ -199,9 +190,9 @@ returns table (
   membership_status text
 )
 language plpgsql
-security invoker
+security definer
 set search_path = ''
-as $$
+as $
 declare
   v_user_id uuid;
   v_organization_id uuid;
