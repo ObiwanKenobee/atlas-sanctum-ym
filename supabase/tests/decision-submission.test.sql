@@ -172,8 +172,69 @@ begin
     null;
   end;
 
+  -- The database trust boundary must reject PostgreSQL numeric special values,
+  -- even when a caller bypasses the application input validator.
+  begin
+    perform public.submit_project_decision_packet(
+      (select project_id from atlas_decision_submission_test_ids),
+      null,
+      'How should the synthetic zone improve water reliability?',
+      'Implement targeted repairs supported by pressure monitoring.',
+      'The approach addresses priority failures while generating measurable operating data.',
+      'The baseline field measurements remain incomplete.',
+      'Service interruptions may continue without a verified remediation plan.',
+      '[
+        {"name":"Targeted repairs","description":"Repair priority leaks and damaged connections identified in a site audit.","expectedBenefit":"Reduce service interruptions.","materialRisks":"Repair costs may exceed initial estimates.","estimatedCost":"NaN","currencyCode":"KES","isRecommended":true},
+        {"name":"Monitoring only","description":"Install monitoring equipment without committing to immediate repairs.","expectedBenefit":"Improve fault visibility.","materialRisks":"Monitoring alone may not restore service.","isRecommended":false}
+      ]'::jsonb,
+      jsonb_build_array(jsonb_build_object(
+        'evidenceVersionId', (select evidence_version_id::text from atlas_decision_submission_test_ids),
+        'relevanceNote', 'Supports the baseline service reliability assessment.'
+      ))
+    );
+    raise exception using errcode = 'P0001', message = 'nan_cost_was_not_rejected';
+  exception when sqlstate '22023' then
+    null;
+  end;
+
+  -- A failure after identity, version and alternatives have been inserted must
+  -- roll the entire function call (including its audit events) back.
+  begin
+    perform public.submit_project_decision_packet(
+      (select project_id from atlas_decision_submission_test_ids),
+      null,
+      'How should the synthetic zone improve water reliability?',
+      'Implement targeted repairs supported by pressure monitoring.',
+      'The approach addresses priority failures while generating measurable operating data.',
+      'The baseline field measurements remain incomplete.',
+      'Service interruptions may continue without a verified remediation plan.',
+      '[
+        {"name":"Targeted repairs","description":"Repair priority leaks and damaged connections identified in a site audit.","expectedBenefit":"Reduce service interruptions.","materialRisks":"Repair costs may exceed initial estimates.","estimatedCost":"150000.00","currencyCode":"KES","isRecommended":true},
+        {"name":"Monitoring only","description":"Install monitoring equipment without committing to immediate repairs.","expectedBenefit":"Improve fault visibility.","materialRisks":"Monitoring alone may not restore service.","isRecommended":false}
+      ]'::jsonb,
+      jsonb_build_array(jsonb_build_object(
+        'evidenceVersionId', 'ffffffff-ffff-4fff-8fff-ffffffffffff',
+        'relevanceNote', 'This deliberately references no evidence version in the project.'
+      ))
+    );
+    raise exception using errcode = 'P0001', message = 'cross_project_evidence_was_not_rejected';
+  exception when sqlstate '23503' then
+    null;
+  end;
+
   select count(*) into v_count from public.decisions;
   if v_count <> 1 then raise exception 'failed packet left partial decision identity'; end if;
+  select count(*) into v_count from public.decision_versions;
+  if v_count <> 1 then raise exception 'failed packet left a partial decision version'; end if;
+  select count(*) into v_count from public.decision_options;
+  if v_count <> 2 then raise exception 'failed packet left partial decision options'; end if;
+  select count(*) into v_count from public.decision_evidence_links;
+  if v_count <> 1 then raise exception 'failed packet left partial evidence links'; end if;
+  select count(*) into v_count
+  from public.audit_events
+  where project_id = (select project_id from atlas_decision_submission_test_ids)
+    and event_type in ('decision.created', 'decision.version_submitted', 'decision.option_added', 'decision.evidence_linked');
+  if v_count <> 5 then raise exception 'failed packet left partial decision audit events'; end if;
 end;
 $test$;
 
