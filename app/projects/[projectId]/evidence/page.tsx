@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import ProjectEvidenceForm from '@/components/project-evidence-form'
+import EvidenceReviewForm from '@/components/evidence-review-form'
 import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -12,6 +13,16 @@ export const metadata: Metadata = {
 }
 
 const evidenceRoles = ['analyst', 'implementer', 'steward']
+const reviewerRoles = ['verifier', 'steward']
+
+type EvidenceReview = {
+  id: string
+  evidence_version_id: string
+  outcome: string
+  reviewer_note: string
+  reviewer_id: string
+  reviewed_at: string
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('en-KE', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
@@ -64,6 +75,12 @@ export default async function ProjectEvidencePage({
     evidenceRoles.includes(membership.functional_role),
   )
 
+  const canReviewEvidence = Boolean(
+    membership &&
+    ['manager', 'contributor'].includes(membership.access_level) &&
+    reviewerRoles.includes(membership.functional_role),
+  )
+
   const places = (placesResult.data ?? []).map((place) => ({
     id: place.id,
     name: place.name,
@@ -88,16 +105,36 @@ export default async function ProjectEvidencePage({
     collection_method: string
     limitations: string
     submitted_at: string
+    submitted_by: string
   }> = []
 
   if (itemIds.length) {
     const { data, error } = await supabase
       .from('evidence_versions')
-      .select('id, evidence_item_id, version_number, evidence_type, title, description, source_type, source_name, source_reference, source_url, collected_at, collection_method, limitations, submitted_at')
+      .select('id, evidence_item_id, version_number, evidence_type, title, description, source_type, source_name, source_reference, source_url, collected_at, collection_method, limitations, submitted_at, submitted_by')
       .in('evidence_item_id', itemIds)
       .order('submitted_at', { ascending: false })
     if (error) throw new Error('Unable to load evidence versions')
     versions = data ?? []
+  }
+
+  let reviews: EvidenceReview[] = []
+  const evidenceVersionIds = versions.map((version) => version.id)
+  if (evidenceVersionIds.length) {
+    const { data, error } = await supabase
+      .from('evidence_reviews')
+      .select('id, evidence_version_id, outcome, reviewer_note, reviewer_id, reviewed_at')
+      .in('evidence_version_id', evidenceVersionIds)
+      .order('reviewed_at', { ascending: true })
+    if (error) throw new Error('Unable to load independent evidence reviews')
+    reviews = data ?? []
+  }
+
+  const reviewsByVersion = new Map<string, EvidenceReview[]>()
+  for (const review of reviews) {
+    const existing = reviewsByVersion.get(review.evidence_version_id) ?? []
+    existing.push(review)
+    reviewsByVersion.set(review.evidence_version_id, existing)
   }
 
   const placeById = new Map(places.map((place) => [place.id, place] as const))
@@ -130,6 +167,8 @@ export default async function ProjectEvidencePage({
                 {versions.map((version) => {
                   const placeId = placeByItemId.get(version.evidence_item_id)
                   const place = placeId ? placeById.get(placeId) : null
+                  const versionReviews = reviewsByVersion.get(version.id) ?? []
+                  const currentUserReview = versionReviews.find((review) => review.reviewer_id === user.id)
                   return (
                     <article key={version.id} className="py-6">
                       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -147,7 +186,37 @@ export default async function ProjectEvidencePage({
                       </div>
                       {version.source_reference && <p className="mt-3 text-xs text-[#687168]">Reference: {version.source_reference}</p>}
                       {version.source_url && <a href={version.source_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex text-[10px] uppercase tracking-[0.12em] text-[#a07837] underline underline-offset-4">Open source reference ↗</a>}
-                      <p className="mt-3 text-[9px] uppercase tracking-[0.1em] text-[#687168]">Submitted record · independent review is a separate workflow</p>
+                      <section className="mt-5 border-t border-[#d4cebd] pt-4">
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                          <h4 className="font-serif text-xl font-light">Independent review history</h4>
+                          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#687168]">{versionReviews.length} recorded</span>
+                        </div>
+                        {versionReviews.length ? (
+                          <div className="mt-3 space-y-3">
+                            {versionReviews.map((review) => (
+                              <div key={review.id} className="border-l-2 border-[#a07837] pl-3">
+                                <div className="flex flex-wrap items-center gap-2 text-[9px] uppercase tracking-[0.1em] text-[#687168]">
+                                  <strong className="font-semibold text-[#17382d]">{review.outcome.replaceAll('_', ' ')}</strong>
+                                  <span>·</span>
+                                  <span>{review.reviewer_id === user.id ? 'Your review' : 'Independent project reviewer'}</span>
+                                  <span>·</span>
+                                  <span>{formatDate(review.reviewed_at)}</span>
+                                </div>
+                                <p className="mt-1 text-sm leading-relaxed text-[#687168]">{review.reviewer_note}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="mt-2 text-xs text-[#687168]">No independent review has been recorded for this version.</p>
+                        )}
+                        {canReviewEvidence && version.submitted_by === user.id ? (
+                          <p className="mt-3 text-xs text-[#687168]">You submitted this version and cannot review your own evidence.</p>
+                        ) : canReviewEvidence && currentUserReview ? (
+                          <p className="mt-3 text-xs text-[#687168]">Your review for this exact version is recorded and cannot be edited. A correction must be submitted as a new evidence version.</p>
+                        ) : canReviewEvidence ? (
+                          <EvidenceReviewForm projectId={project.id} evidenceVersionId={version.id} />
+                        ) : null}
+                      </section>
                     </article>
                   )
                 })}
@@ -182,7 +251,7 @@ export default async function ProjectEvidencePage({
             </div>
           </section>
         </div>
-        <p className="mt-10 border-t border-[#d4cebd] pt-5 text-xs leading-relaxed text-[#687168]">This release stores evidence descriptions and provenance metadata. It does not upload binary attachments, certify source truth, or independently review submissions. An evidence record is not itself proof that a measurement is accurate.</p>
+        <p className="mt-10 border-t border-[#d4cebd] pt-5 text-xs leading-relaxed text-[#687168]">This release stores evidence descriptions and provenance metadata. It does not upload binary attachments or certify source truth. Independent reviews record a governance judgement about an exact evidence version; they do not prove that a measurement is accurate.</p>
       </div>
     </main>
   )
