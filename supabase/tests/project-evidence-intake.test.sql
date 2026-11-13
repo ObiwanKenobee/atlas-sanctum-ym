@@ -289,16 +289,6 @@ begin
   from atlas_project_evidence_intake_ids
   returning id into v_review_id;
 
-  select count(*) into v_count
-  from public.audit_events
-  where entity_id = v_review_id
-    and event_type = 'evidence_review.recorded'
-    and actor_id = 'f2000000-0000-4000-8000-000000000002';
-
-  if v_count <> 1 then
-    raise exception 'independent evidence review audit event was not recorded';
-  end if;
-
   begin
     insert into public.evidence_reviews (
       evidence_version_id, evidence_item_id, organization_id, project_id,
@@ -330,6 +320,30 @@ begin
 
   if v_count <> 1 then
     raise exception 'duplicate review attempt changed evidence review history';
+  end if;
+end;
+$test$;
+
+-- Auditing is intentionally readable only by project managers/stewards/org admins.
+-- Verify the trigger output in the test owner context, not as the verifier.
+reset role;
+do $test$
+declare
+  v_count integer;
+begin
+  select count(*) into v_count
+  from public.audit_events
+  where entity_id in (
+    select id from public.evidence_reviews
+    where evidence_version_id = (
+      select evidence_version_id from atlas_project_evidence_intake_ids
+    )
+  )
+    and event_type = 'evidence_review.recorded'
+    and actor_id = 'f2000000-0000-4000-8000-000000000002';
+
+  if v_count <> 1 then
+    raise exception 'independent evidence review audit event was not recorded';
   end if;
 end;
 $test$;
