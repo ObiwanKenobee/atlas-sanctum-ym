@@ -1,5 +1,5 @@
 
--- Atlas Sanctum v0.2.14 — project place and evidence intake transaction tests.
+-- Atlas Sanctum v0.2.15 — project evidence intake and independent review tests.
 -- Synthetic data only. Run against the dedicated development project; ROLLBACK removes fixtures.
 begin;
 
@@ -131,6 +131,8 @@ begin
 
   v_item_id := (v_result->>'evidence_item_id')::uuid;
   v_version_id := (v_result->>'evidence_version_id')::uuid;
+  update atlas_project_evidence_intake_ids
+  set evidence_item_id = v_item_id, evidence_version_id = v_version_id;
 
   if v_result->>'version_number' <> '1' then
     raise exception 'unexpected initial evidence version number';
@@ -267,6 +269,122 @@ begin
   if v_count <> 1 then raise exception 'unauthorized evidence submission left an item'; end if;
 end;
 $test$;
+
+
+-- The verifier records a single append-only review for the exact evidence version.
+do $test$
+declare
+  v_review_id uuid;
+  v_count integer;
+  v_duplicate_rejected boolean := false;
+begin
+  insert into public.evidence_reviews (
+    evidence_version_id, evidence_item_id, organization_id, project_id,
+    outcome, reviewer_note, reviewer_id
+  )
+  select evidence_version_id, evidence_item_id, organization_id, project_id,
+    'accepted',
+    'Source identity, collection method, and limitations are sufficiently documented.',
+    verifier_id
+  from atlas_project_evidence_intake_ids
+  returning id into v_review_id;
+
+  begin
+    insert into public.evidence_reviews (
+      evidence_version_id, evidence_item_id, organization_id, project_id,
+      outcome, reviewer_note, reviewer_id
+    )
+    select evidence_version_id, evidence_item_id, organization_id, project_id,
+      'rejected', 'Duplicate reviews for one version must not overwrite history.', verifier_id
+    from atlas_project_evidence_intake_ids;
+  exception when unique_violation then
+    v_duplicate_rejected := true;
+  end;
+
+  if not v_duplicate_rejected then
+    raise exception 'reviewer recorded more than one review for the same evidence version';
+  end if;
+
+  if has_table_privilege('authenticated', 'public.evidence_reviews', 'UPDATE')
+    or has_table_privilege('authenticated', 'public.evidence_reviews', 'DELETE') then
+    raise exception 'authenticated users can mutate append-only review history';
+  end if;
+
+  if has_table_privilege('anon', 'public.evidence_reviews', 'INSERT') then
+    raise exception 'anonymous users can submit evidence reviews';
+  end if;
+
+  select count(*) into v_count
+  from public.evidence_reviews
+  where evidence_version_id = (select evidence_version_id from atlas_project_evidence_intake_ids);
+
+  if v_count <> 1 then
+    raise exception 'duplicate review attempt changed evidence review history';
+  end if;
+end;
+$test$;
+
+-- Auditing is intentionally readable only by project managers/stewards/org admins.
+-- Verify the trigger output in the test owner context, not as the verifier.
+reset role;
+do $test$
+declare
+  v_count integer;
+begin
+  select count(*) into v_count
+  from public.audit_events
+  where entity_id in (
+    select id from public.evidence_reviews
+    where evidence_version_id = (
+      select evidence_version_id from atlas_project_evidence_intake_ids
+    )
+  )
+    and event_type = 'evidence_review.recorded'
+    and actor_id = 'f2000000-0000-4000-8000-000000000002';
+
+  if v_count <> 1 then
+    raise exception 'independent evidence review audit event was not recorded';
+  end if;
+end;
+$test$;
+
+-- The evidence submitter cannot review their own version, even though they created the project.
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'f1000000-0000-4000-8000-000000000001', true);
+
+do $test$
+declare
+  v_rejected boolean := false;
+  v_count integer;
+begin
+  begin
+    insert into public.evidence_reviews (
+      evidence_version_id, evidence_item_id, organization_id, project_id,
+      outcome, reviewer_note, reviewer_id
+    )
+    select evidence_version_id, evidence_item_id, organization_id, project_id,
+      'accepted', 'Submitter cannot review own evidence.', analyst_id
+    from atlas_project_evidence_intake_ids;
+  exception when insufficient_privilege then
+    v_rejected := true;
+  end;
+
+  if not v_rejected then
+    raise exception 'evidence submitter was allowed to review own evidence';
+  end if;
+
+  select count(*) into v_count
+  from public.evidence_reviews
+  where evidence_version_id = (select evidence_version_id from atlas_project_evidence_intake_ids);
+
+  if v_count <> 1 then
+    raise exception 'self-review attempt changed review history';
+  end if;
+end;
+$test$;
+
+reset role;
 
 reset role;
 rollback;
