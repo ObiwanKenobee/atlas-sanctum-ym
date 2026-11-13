@@ -138,6 +138,8 @@ export default async function ProjectDecisionsPage({
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-[#687168]">{project.purpose}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href={`/projects/${project.id}/team`} className="inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Manage project team</Link>
+          <Link href={`/projects/${project.id}/places`} className="inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Project places</Link>
+          <Link href={`/projects/${project.id}/evidence`} className="inline-flex border border-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] hover:bg-[#17382d] hover:text-[#f7f3ea]">Evidence registry</Link>
           {canSubmitDecision && <Link href={`/projects/${project.id}/decisions/new`} className="inline-flex bg-[#17382d] px-4 py-3 text-[10px] uppercase tracking-[0.14em] text-[#f7f3ea] hover:bg-[#285243]">Prepare a proposal</Link>}
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-y border-[#c9c2b1] py-4">
