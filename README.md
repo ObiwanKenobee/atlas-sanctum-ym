@@ -11,7 +11,7 @@ Our founding conviction is simple:
 
 > Intelligence becomes valuable when it helps people act wisely and serve faithfully.
 
-> **Current codebase:** a Next.js application with Supabase-backed authentication, user-owned field and water-pilot records, and an organization/project-scoped institutional data model. The checked-in database migrations establish tenant boundaries, project places, versioned evidence, and versioned decisions with independent authorization. Organization and project creation plus assignment of existing organization members are now wired to authenticated database controls. Decision proposal submission, external invitations, action execution, and verified-outcome workflows remain in progress. See [Current Repository Implementation](#current-repository-implementation).
+> **Current codebase:** a Next.js application with Supabase-backed authentication, user-owned field and water-pilot records, and an organization/project-scoped institutional data model. The checked-in database migrations establish tenant boundaries, project places, versioned evidence, and versioned decisions with independent authorization. Organization and project creation plus assignment of existing organization members are wired to authenticated database controls. The draft decision-submission workflow creates an immutable first version with alternatives and exact project evidence citations in one authenticated database transaction. Project evidence intake, external invitations, action execution, and verified-outcome workflows remain in progress. See [Current Repository Implementation](#current-repository-implementation).
 
 ---
 
@@ -238,8 +238,10 @@ The presence of schema and application interfaces does not establish that a live
 - The development database currently has no organization, project, evidence, or decision records. No institutional project owner, external partner, real field dataset, or pilot approval is confirmed.
 - Organization creation assigns the authenticated creator as owner. Project creation is restricted to organization owners/admins with a canonical workspace profile; the database creates that person's active project manager membership and audit events in the same transaction.
 - Project lists show only projects with an active persisted project membership. The project-team view can display members; owners/admins can assign existing active organization members at manager, contributor, or viewer access level. The database verifies the target member’s active organization scope and stored functional role, and records the membership change in the audit trail.
-- The project decision register and record detail pages remain read-only. They display immutable proposal versions, alternatives, exact evidence-version citations, and the authorization outcome bound to each version.
-- New email invitations, external-user onboarding, decision drafting/submission, action assignment, and verified-outcome workflows are not yet exposed.
+- Project places can be registered by active project managers/contributors with an allowed place-writing functional role. Place creation is tenant-scoped, project-unique by slug, and audited; project managers can correct place metadata.
+- Project-scoped evidence intake creates an evidence identity and immutable first provenance version atomically. It requires a registered place and records evidence type, source, source reference/HTTPS URL, collection time, method, description, and limitations. Corrections are appended as new versions; previous evidence remains intact.
+- Authorized analyst, implementer, or steward members with manager/contributor access can submit a first decision proposal version when the project already has exact evidence versions. Proposals require two alternatives, exactly one recommendation, and at least one evidence citation. Approval remains a separate action bound to that exact version.
+- Evidence intake currently captures text and provenance metadata only; binary file uploads, evidence review UI, new email invitations, external-user onboarding, action assignment, and verified-outcome workflows are not yet exposed. Personal field records are not automatically converted into institutional project evidence.
 - Existing user-owned `field_records` and water-pilot records remain separate from institutional project evidence. They are not automatically reassigned or imported into an organization.
 - Do not infer a real project, partner relationship, service improvement, beneficiary result, or measured impact from synthetic SQL fixtures or demonstration content.
 - GitHub Actions run [#42](https://github.com/ObiwanKenobee/atlas-sanctum-ym/actions/runs/43249815173) on the current main commit failed in the TypeScript typecheck/unit-test job. The connected GitHub interface does not expose the job steps or log blob (404); the failing step and root cause are unknown. CI health therefore remains unverified.
@@ -279,7 +281,7 @@ The connected Atlas Sanctum development project is active and has been inspected
 
 ### Testing and delivery status
 
-Node unit tests cover organization/project/member input validation, workspace roles, authorization policy, request authorization, project creation, and the decision-register view model. The database suites `supabase/tests/tenant-isolation.test.sql`, `supabase/tests/evidence-registry.test.sql`, `supabase/tests/decision-register.test.sql`, and `supabase/tests/project-creation-membership.test.sql` are executed against the dedicated development database using synthetic fixtures and transaction rollback.
+Node unit tests cover organization/project/member input validation, workspace roles, authorization policy, request authorization, project creation, and the decision-register view model. The database suites `supabase/tests/tenant-isolation.test.sql`, `supabase/tests/evidence-registry.test.sql`, `supabase/tests/decision-register.test.sql`, `supabase/tests/project-creation-membership.test.sql`, `supabase/tests/decision-submission.test.sql`, and `supabase/tests/project-evidence-intake.test.sql` are executed against the dedicated development database using synthetic fixtures and transaction rollback.
 
 These database checks are development validation, not evidence of a production deployment. GitHub Actions has repeatedly failed in its TypeScript typecheck/unit-test job, but the available GitHub job endpoint exposes neither steps nor logs. The failure cause is unknown; do not report a passing CI baseline until an actionable run completes successfully.
 
@@ -287,7 +289,7 @@ The next engineering gates are:
 
 1. Diagnose the GitHub Actions failure using accessible step logs or a reproducible local run.
 2. Add external-user invitations only after an approved invite/acceptance and identity-verification flow is designed.
-3. Add a safe, server-authorized decision submission path that preserves version immutability and independent approval.
+3. Add project-scoped evidence intake with source provenance, validation, and immutable revisions.
 4. Connect approved decisions to assigned actions and independently verified outcomes.
 5. Validate one complete operational workflow with a named institutional owner and authorized real-world data.
 
